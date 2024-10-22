@@ -5,6 +5,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/dbConnection";
+import contactRoutes from "./contacts/infrastructure/http/routes/contactRoutes";
 
 const app = express();
 const port = env.port.PORT;
@@ -24,6 +25,8 @@ app.use(limiter);
 app.get("/", (_req, res) => {
   res.send("Welcome to the users API 🚀");
 });
+
+app.use("/api/v1", contactRoutes);
 
 connectWithRetry(10, 10000, () => {
   app.listen(port, () => {
