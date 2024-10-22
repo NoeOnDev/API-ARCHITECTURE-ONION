@@ -43,6 +43,16 @@ export class PostgresContactRepository implements ContactRepository {
     return new Contact(row.first_name, row.last_name, row.email, row.phone);
   }
 
+  async findByEmail(email: string): Promise<Contact | null> {
+    const query = `SELECT * FROM contacts WHERE email = $1`;
+    const result = await this.pool.query(query, [email]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    const row = result.rows[0];
+    return new Contact(row.first_name, row.last_name, row.email, row.phone);
+  }
+
   async deleteById(id: string): Promise<void> {
     const query = `DELETE FROM contacts WHERE id = $1`;
     await this.pool.query(query, [id]);
