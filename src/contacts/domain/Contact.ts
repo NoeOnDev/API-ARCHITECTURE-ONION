@@ -9,9 +9,10 @@ export class Contact {
     firstName: string,
     lastName: string,
     email: string,
-    phone: string
+    phone: string,
+    id?: string
   ) {
-    this.id = crypto.randomUUID();
+    this.id = id || crypto.randomUUID();
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;

@@ -29,7 +29,8 @@ export class PostgresContactRepository implements ContactRepository {
     const query = `SELECT * FROM contacts`;
     const result = await this.pool.query(query);
     return result.rows.map(
-      (row) => new Contact(row.first_name, row.last_name, row.email, row.phone)
+      (row) =>
+        new Contact(row.first_name, row.last_name, row.email, row.phone, row.id)
     );
   }
 
@@ -40,7 +41,13 @@ export class PostgresContactRepository implements ContactRepository {
       return null;
     }
     const row = result.rows[0];
-    return new Contact(row.first_name, row.last_name, row.email, row.phone);
+    return new Contact(
+      row.first_name,
+      row.last_name,
+      row.email,
+      row.phone,
+      row.id
+    );
   }
 
   async findByEmail(email: string): Promise<Contact | null> {
@@ -50,7 +57,13 @@ export class PostgresContactRepository implements ContactRepository {
       return null;
     }
     const row = result.rows[0];
-    return new Contact(row.first_name, row.last_name, row.email, row.phone);
+    return new Contact(
+      row.first_name,
+      row.last_name,
+      row.email,
+      row.phone,
+      row.id
+    );
   }
 
   async deleteById(id: string): Promise<void> {
