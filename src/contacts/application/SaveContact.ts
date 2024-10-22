@@ -9,8 +9,9 @@ export class SaveContact {
     lastName: string,
     email: string,
     phone: string
-  ): Promise<void> {
+  ): Promise<Contact> {
     const contact = new Contact(firstName, lastName, email, phone);
     await this.contactRepository.save(contact);
+    return contact;
   }
 }

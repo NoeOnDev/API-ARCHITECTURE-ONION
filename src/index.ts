@@ -7,7 +7,7 @@ import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/dbConnection";
 import contactRoutes from "./contacts/infrastructure/http/routes/contactRoutes";
 
-const app = express();
+export const app = express();
 const port = env.port.PORT;
 
 app.use(cors());
