@@ -1,4 +1,4 @@
-import { Contact } from "./contact";
+import { Contact } from "./Contact";
 
 export interface ContactRepository {
   save(contact: Contact): Promise<void>;

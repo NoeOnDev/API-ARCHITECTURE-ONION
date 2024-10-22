@@ -4,7 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
-import { connectWithRetry } from "./_helpers/odmConnection";
+import { connectWithRetry } from "./_helpers/dbConnection";
 
 const app = express();
 const port = env.port.PORT;
