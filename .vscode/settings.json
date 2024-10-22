@@ -5,6 +5,7 @@
         "Hasher",
         "hotmail",
         "hstore",
+        "tsyringe",
         "typeorm",
         "uuidv"
     ]
