@@ -7,27 +7,27 @@ import {
   deleteContactByIdController,
 } from "../../dependencyInjection";
 
-const router = Router();
+const contactRoutes = Router();
 
-router.post(
+contactRoutes.post(
   "/contacts",
   saveContactController.handle.bind(saveContactController)
 );
-router.get(
+contactRoutes.get(
   "/contacts",
   findAllContactsController.handle.bind(findAllContactsController)
 );
-router.get(
+contactRoutes.get(
   "/contacts/:id",
   findContactByIdController.handle.bind(findContactByIdController)
 );
-router.get(
+contactRoutes.get(
   "/contacts/email/:email",
   findContactByEmailController.handle.bind(findContactByEmailController)
 );
-router.delete(
+contactRoutes.delete(
   "/contacts/:id",
   deleteContactByIdController.handle.bind(deleteContactByIdController)
 );
 
-export default router;
+export default contactRoutes;

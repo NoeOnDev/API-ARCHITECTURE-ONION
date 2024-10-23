@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/dbConnection";
 import contactRoutes from "./contacts/infrastructure/http/routes/contactRoutes";
+import userRoutes from "./users/infrastructure/http/routes/userRoutes";
 
 export const app = express();
 const port = env.port.PORT;
@@ -27,6 +28,7 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/api/v1", contactRoutes);
+app.use("/api/v1", userRoutes);
 
 connectWithRetry(10, 10000, () => {
   app.listen(port, () => {
