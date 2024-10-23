@@ -18,7 +18,7 @@ contactRoutes.get(
   findAllContactsController.handle.bind(findAllContactsController)
 );
 contactRoutes.get(
-  "/contacts/:id",
+  "/contacts/id/:id",
   findContactByIdController.handle.bind(findContactByIdController)
 );
 contactRoutes.get(
