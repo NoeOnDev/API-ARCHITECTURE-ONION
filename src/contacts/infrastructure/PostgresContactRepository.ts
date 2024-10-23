@@ -7,13 +7,14 @@ export class PostgresContactRepository implements ContactRepository {
 
   async save(contact: Contact): Promise<void> {
     const query = `
-      INSERT INTO contacts (id, first_name, last_name, email, phone)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO contacts (id, first_name, last_name, email, phone, status)
+      VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT (id) DO UPDATE
       SET first_name = EXCLUDED.first_name,
           last_name = EXCLUDED.last_name,
           email = EXCLUDED.email,
-          phone = EXCLUDED.phone;
+          phone = EXCLUDED.phone,
+          status = EXCLUDED.status;
     `;
     const values = [
       contact.getId(),
@@ -21,6 +22,7 @@ export class PostgresContactRepository implements ContactRepository {
       contact.getLastName(),
       contact.getEmail(),
       contact.getPhone(),
+      contact.getStatus(),
     ];
     await this.pool.query(query, values);
   }
@@ -30,7 +32,14 @@ export class PostgresContactRepository implements ContactRepository {
     const result = await this.pool.query(query);
     return result.rows.map(
       (row) =>
-        new Contact(row.first_name, row.last_name, row.email, row.phone, row.id)
+        new Contact(
+          row.first_name,
+          row.last_name,
+          row.email,
+          row.phone,
+          row.status,
+          row.id
+        )
     );
   }
 
@@ -46,6 +55,7 @@ export class PostgresContactRepository implements ContactRepository {
       row.last_name,
       row.email,
       row.phone,
+      row.status,
       row.id
     );
   }
@@ -62,6 +72,7 @@ export class PostgresContactRepository implements ContactRepository {
       row.last_name,
       row.email,
       row.phone,
+      row.status,
       row.id
     );
   }

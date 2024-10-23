@@ -4,12 +4,14 @@ export class Contact {
   private lastName: string;
   private email: string;
   private phone: string;
+  private status: "LEAD" | "USER";
 
   constructor(
     firstName: string,
     lastName: string,
     email: string,
     phone: string,
+    status: "LEAD" = "LEAD",
     id?: string
   ) {
     this.id = id || crypto.randomUUID();
@@ -17,6 +19,7 @@ export class Contact {
     this.lastName = lastName;
     this.email = email;
     this.phone = phone;
+    this.status = status;
   }
 
   getId(): string {
@@ -37,5 +40,13 @@ export class Contact {
 
   getPhone(): string {
     return this.phone;
+  }
+
+  promoteToUser(): void {
+    this.status = "USER";
+  }
+
+  getStatus(): string {
+    return this.status;
   }
 }
