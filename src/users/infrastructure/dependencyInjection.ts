@@ -18,7 +18,6 @@ import { DeleteUserByIdController } from "./http/controllers/DeleteUserByIdContr
 import { ExistsUserByUsernameController } from "./http/controllers/ExistsUserByUsernameController";
 import { ExistsUserByEmailController } from "./http/controllers/ExistsUserByEmailController";
 
-
 import { PostgresUserRepository } from "./PostgresUserRepository";
 import { PostgresContactRepository } from "../../contacts/infrastructure/PostgresContactRepository";
 
