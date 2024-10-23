@@ -33,6 +33,10 @@ export class User {
     return this.password;
   }
 
+  getContact(): Contact {
+    return this.contact;
+  }
+
   getEmail(): string {
     return this.contact.getEmail();
   }

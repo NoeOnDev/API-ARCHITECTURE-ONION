@@ -5,6 +5,17 @@ import { ContactRepository } from "../domain/ContactRepository";
 export class PostgresContactRepository implements ContactRepository {
   constructor(private pool: Pool) {}
 
+  private mapRowToContact(row: any): Contact {
+    return new Contact(
+      row.first_name,
+      row.last_name,
+      row.email,
+      row.phone,
+      row.status,
+      row.id
+    );
+  }
+
   async save(contact: Contact): Promise<void> {
     const query = `
       INSERT INTO contacts (id, first_name, last_name, email, phone, status)
@@ -30,17 +41,7 @@ export class PostgresContactRepository implements ContactRepository {
   async findAll(): Promise<Contact[]> {
     const query = `SELECT * FROM contacts`;
     const result = await this.pool.query(query);
-    return result.rows.map(
-      (row) =>
-        new Contact(
-          row.first_name,
-          row.last_name,
-          row.email,
-          row.phone,
-          row.status,
-          row.id
-        )
-    );
+    return result.rows.map((row) => this.mapRowToContact(row));
   }
 
   async findById(id: string): Promise<Contact | null> {
@@ -49,15 +50,7 @@ export class PostgresContactRepository implements ContactRepository {
     if (result.rows.length === 0) {
       return null;
     }
-    const row = result.rows[0];
-    return new Contact(
-      row.first_name,
-      row.last_name,
-      row.email,
-      row.phone,
-      row.status,
-      row.id
-    );
+    return this.mapRowToContact(result.rows[0]);
   }
 
   async findByEmail(email: string): Promise<Contact | null> {
@@ -66,15 +59,7 @@ export class PostgresContactRepository implements ContactRepository {
     if (result.rows.length === 0) {
       return null;
     }
-    const row = result.rows[0];
-    return new Contact(
-      row.first_name,
-      row.last_name,
-      row.email,
-      row.phone,
-      row.status,
-      row.id
-    );
+    return this.mapRowToContact(result.rows[0]);
   }
 
   async deleteById(id: string): Promise<void> {
