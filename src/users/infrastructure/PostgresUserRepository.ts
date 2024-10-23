@@ -96,9 +96,9 @@ export class PostgresUserRepository implements UserRepository {
   }
 
   async existsByUsername(username: string): Promise<boolean> {
-    const query = `SELECT 1 FROM users WHERE username = $1`;
+    const query = `SELECT 1 FROM users WHERE username = $1 LIMIT 1`;
     const result = await this.pool.query(query, [username]);
-    return result.rows.length > 0;
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
   async existsByEmail(email: string): Promise<boolean> {
@@ -107,8 +107,9 @@ export class PostgresUserRepository implements UserRepository {
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
       WHERE c.email = $1
+      LIMIT 1
     `;
     const result = await this.pool.query(query, [email]);
-    return result.rows.length > 0;
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
