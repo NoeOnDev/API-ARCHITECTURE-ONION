@@ -26,7 +26,7 @@ contactRoutes.get(
   findContactByEmailController.handle.bind(findContactByEmailController)
 );
 contactRoutes.delete(
-  "/contacts/:id",
+  "/contacts/id/:id",
   deleteContactByIdController.handle.bind(deleteContactByIdController)
 );
 
