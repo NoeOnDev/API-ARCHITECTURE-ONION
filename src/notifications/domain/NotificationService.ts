@@ -1,5 +1,5 @@
-import { NotificationChannel } from "./NotificationChannel";
-import { VerificationCode } from "./VerificationCode";
+import { NotificationChannel } from "./value-objects/NotificationChannel";
+import { VerificationCode } from "./value-objects/VerificationCode";
 
 export interface NotificationService {
   sendVerificationCode(
@@ -7,6 +7,7 @@ export interface NotificationService {
     code: VerificationCode,
     channel: NotificationChannel
   ): Promise<void>;
+
   sendWelcomeMessage(
     userId: string,
     channel: NotificationChannel
