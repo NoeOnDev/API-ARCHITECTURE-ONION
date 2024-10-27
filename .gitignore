@@ -1,17 +1,1 @@
-# Modules
-node_modules
-
-# Logs
-
-# Environment
-.env
-
-# Build
-build
-dist
-
-# Dependencies
-package-lock.json
-
-# IDE
 .vscode
