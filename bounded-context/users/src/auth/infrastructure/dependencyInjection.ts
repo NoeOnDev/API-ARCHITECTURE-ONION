@@ -5,7 +5,15 @@ import { RegisterUser } from "../application/RegisterUser";
 
 import { RegisterUserController } from "./http/controllers/RegisterUserController";
 
-const registerUser = new RegisterUser(userRepository, contactRepository);
+import { Argon2HashService } from "./services/Argon2HashService";
+
+const hashService = new Argon2HashService();
+
+const registerUser = new RegisterUser(
+  userRepository,
+  contactRepository,
+  hashService
+);
 
 const registerUserController = new RegisterUserController(registerUser);
 
