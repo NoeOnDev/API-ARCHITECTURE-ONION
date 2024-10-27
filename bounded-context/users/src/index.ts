@@ -7,6 +7,7 @@ import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/dbConnection";
 import contactRoutes from "./contacts/infrastructure/http/routes/contactRoutes";
 import userRoutes from "./users/infrastructure/http/routes/userRoutes";
+import authRoutes from "./auth/infrastructure/http/routes/authRoutes";
 
 export const app = express();
 const port = env.port.PORT;
@@ -29,6 +30,7 @@ app.get("/", (_req, res) => {
 
 app.use("/api/v1", contactRoutes);
 app.use("/api/v1", userRoutes);
+app.use("/api/v1", authRoutes);
 
 connectWithRetry(10, 10000, () => {
   app.listen(port, () => {

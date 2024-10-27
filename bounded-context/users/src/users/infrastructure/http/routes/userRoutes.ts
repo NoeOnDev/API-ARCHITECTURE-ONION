@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  saveUserController,
   findAllUsersController,
   findUserByIdController,
   findUserByUsernameController,
@@ -12,7 +11,6 @@ import {
 
 const userRoutes = Router();
 
-userRoutes.post("/users", saveUserController.handle.bind(saveUserController));
 userRoutes.get(
   "/users",
   findAllUsersController.handle.bind(findAllUsersController)

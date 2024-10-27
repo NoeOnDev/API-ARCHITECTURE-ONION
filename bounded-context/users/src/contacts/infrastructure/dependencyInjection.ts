@@ -37,6 +37,7 @@ const deleteContactByIdController = new DeleteContactByIdController(
 );
 
 export {
+  contactRepository,
   saveContactController,
   findAllContactsController,
   findContactByIdController,
