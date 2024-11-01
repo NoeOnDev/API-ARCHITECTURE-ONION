@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import { HashService } from "../../domain/HashService";
+import { HashService } from "../../domain/services/HashService";
 
 export class Argon2HashService implements HashService {
   async hash(password: string): Promise<string> {
