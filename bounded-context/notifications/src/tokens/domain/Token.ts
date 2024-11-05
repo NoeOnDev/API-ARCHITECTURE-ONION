@@ -1,10 +1,12 @@
+import { TokenStatus } from "./value-objects/TokenStatus";
+
 export class Token {
   private id: string;
   private userId: string;
   private code: string;
   private createdAt: Date;
   private expiresAt: Date;
-  private status: "PENDING" | "USED" | "EXPIRED";
+  private status: TokenStatus;
 
   constructor(
     id: string,
@@ -12,7 +14,7 @@ export class Token {
     code: string,
     createdAt: Date,
     expiresAt: Date,
-    status: "PENDING" | "USED" | "EXPIRED"
+    status: TokenStatus
   ) {
     this.id = id || crypto.randomUUID();
     this.userId = userId;
@@ -20,6 +22,24 @@ export class Token {
     this.createdAt = createdAt || new Date();
     this.expiresAt = expiresAt;
     this.status = status;
+  }
+
+  markAsUsed(): void {
+    this.status = TokenStatus.USED;
+  }
+
+  expire(): void {
+    if (!this.isExpired()) {
+      this.status = TokenStatus.EXPIRED;
+    }
+  }
+
+  isExpired(): boolean {
+    return new Date() > this.expiresAt;
+  }
+
+  isPending(): boolean {
+    return this.status.isPending();
   }
 
   getId(): string {
@@ -42,7 +62,7 @@ export class Token {
     return this.expiresAt;
   }
 
-  getStatus(): "PENDING" | "USED" | "EXPIRED" {
+  getStatus(): TokenStatus {
     return this.status;
   }
 }
