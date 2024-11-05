@@ -13,7 +13,7 @@ export class GenerateTokenForUser {
     }
 
     const code = this.generateCode();
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+    const expiresAt = new Date(Date.now() + 1 * 60 * 1000);
     const newToken = new Token(
       userId,
       code,

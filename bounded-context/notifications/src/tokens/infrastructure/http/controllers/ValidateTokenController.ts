@@ -21,7 +21,6 @@ export class ValidateTokenController {
       }
     } catch (error) {
       res.status(500).send("Error validating token");
-        console.error(error);
     }
   }
 }

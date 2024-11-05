@@ -17,7 +17,6 @@ export class GenerateTokenForUserController {
       res.status(201).send(token);
     } catch (error) {
       res.status(500).send("Error generating token");
-      console.error(error);
     }
   }
 }
