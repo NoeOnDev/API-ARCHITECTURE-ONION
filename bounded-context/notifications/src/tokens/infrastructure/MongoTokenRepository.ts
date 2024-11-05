@@ -25,19 +25,23 @@ const TokenModel = mongoose.model<TokenDocument>("Token", tokenSchema);
 
 export class MongoTokenRepository implements TokenRepository {
   async save(token: Token): Promise<void> {
-    const tokenDocument = new TokenModel({
-      id: token.getId(),
-      userId: token.getUserId(),
-      code: token.getCode(),
-      createdAt: token.getCreatedAt(),
-      expiresAt: token.getExpiresAt(),
-      status: token.getStatus().getValue(),
-    });
-    await tokenDocument.save();
+    await TokenModel.findOneAndUpdate(
+      { id: token.getId() },
+      {
+        userId: token.getUserId(),
+        code: token.getCode(),
+        createdAt: token.getCreatedAt(),
+        expiresAt: token.getExpiresAt(),
+        status: token.getStatus().getValue(),
+      },
+      { upsert: true, new: true }
+    ).exec();
   }
 
   async findByUserId(userId: string): Promise<Token | null> {
-    const tokenDocument = await TokenModel.findOne({ userId }).exec();
+    const tokenDocument = await TokenModel.findOne({ userId })
+      .sort({ createdAt: -1 })
+      .exec();
     return tokenDocument ? this.mapDocumentToToken(tokenDocument) : null;
   }
 
@@ -60,6 +64,7 @@ export class MongoTokenRepository implements TokenRepository {
       tokenDocument.createdAt,
       tokenDocument.expiresAt,
       TokenStatus.from(tokenDocument.status),
+      tokenDocument.id
     );
   }
 }

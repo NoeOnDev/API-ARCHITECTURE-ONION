@@ -7,7 +7,7 @@ export class GenerateTokenForUser {
 
   async execute(userId: string): Promise<Token> {
     const activeToken = await this.tokenRepository.findByUserId(userId);
-    if (activeToken && activeToken.isPending() && !activeToken.isExpired()) {
+    if (activeToken && activeToken.isPending()) {
       activeToken.expire();
       await this.tokenRepository.save(activeToken);
     }
