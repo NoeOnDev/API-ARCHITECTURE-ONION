@@ -9,12 +9,12 @@ export class Token {
   private status: TokenStatus;
 
   constructor(
-    id: string,
     userId: string,
     code: string,
     createdAt: Date,
     expiresAt: Date,
-    status: TokenStatus
+    status: TokenStatus,
+    id?: string
   ) {
     this.id = id || crypto.randomUUID();
     this.userId = userId;

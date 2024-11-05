@@ -55,12 +55,11 @@ export class MongoTokenRepository implements TokenRepository {
 
   private mapDocumentToToken(tokenDocument: TokenDocument): Token {
     return new Token(
-      tokenDocument.id,
       tokenDocument.userId,
       tokenDocument.code,
       tokenDocument.createdAt,
       tokenDocument.expiresAt,
-      TokenStatus.from(tokenDocument.status)
+      TokenStatus.from(tokenDocument.status),
     );
   }
 }

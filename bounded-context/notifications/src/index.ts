@@ -5,6 +5,7 @@ import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/odmConnection";
+import tokenRoutes from "./tokens/infrastructure/http/routes/tokenRoutes";
 
 export const app = express();
 const port = env.port.PORT;
@@ -24,6 +25,8 @@ app.use(limiter);
 app.get("/", (_req, res) => {
   res.send("Welcome to the notifications API 🚀");
 });
+
+app.use("/api/v1", tokenRoutes);
 
 connectWithRetry(10, 10000, () => {
   app.listen(port, () => {
