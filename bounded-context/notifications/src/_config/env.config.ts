@@ -12,7 +12,6 @@ const envSchema = Joi.object({
   TWILIO_ACCOUNT_SID: Joi.string().required(),
   TWILIO_AUTH_TOKEN: Joi.string().required(),
   TWILIO_PHONE_NUMBER: Joi.string().required(),
-  TWILIO_PHONE_NUMBER_SMS: Joi.string().required(),
   MONGO_URI: Joi.string().required(),
 }).unknown();
 
@@ -31,7 +30,6 @@ const {
   TWILIO_ACCOUNT_SID,
   TWILIO_AUTH_TOKEN,
   TWILIO_PHONE_NUMBER,
-  TWILIO_PHONE_NUMBER_SMS,
   MONGO_URI,
 } = envVars;
 
@@ -49,7 +47,6 @@ interface Env {
     TWILIO_ACCOUNT_SID: string;
     TWILIO_AUTH_TOKEN: string;
     TWILIO_PHONE_NUMBER: string;
-    TWILIO_PHONE_NUMBER_SMS: string;
   };
   mongo: {
     MONGO_URI: string;
@@ -70,7 +67,6 @@ export const env: Env = {
     TWILIO_ACCOUNT_SID: TWILIO_ACCOUNT_SID,
     TWILIO_AUTH_TOKEN: TWILIO_AUTH_TOKEN,
     TWILIO_PHONE_NUMBER: TWILIO_PHONE_NUMBER,
-    TWILIO_PHONE_NUMBER_SMS: TWILIO_PHONE_NUMBER_SMS,
   },
   mongo: {
     MONGO_URI: MONGO_URI,

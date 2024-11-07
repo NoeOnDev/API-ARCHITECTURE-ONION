@@ -3,14 +3,16 @@ import { NotificationStatus } from "./value-objects/NotificationStatus";
 
 export class Notification {
   private id: string;
-  private userId: string;
+  private recipientId: string;
+  private recipientType: "User" | "Contact";
   private channel: NotificationChannel;
   private message: string;
   private status: NotificationStatus;
   private createdAt: Date;
 
   constructor(
-    userId: string,
+    recipientId: string,
+    recipientType: "User" | "Contact",
     channel: NotificationChannel,
     message: string,
     status: NotificationStatus = NotificationStatus.PENDING,
@@ -18,7 +20,8 @@ export class Notification {
     createdAt?: Date
   ) {
     this.id = id || crypto.randomUUID();
-    this.userId = userId;
+    this.recipientId = recipientId;
+    this.recipientType = recipientType;
     this.channel = channel;
     this.message = message;
     this.status = status;
@@ -41,8 +44,12 @@ export class Notification {
     return this.id;
   }
 
-  getUserId(): string {
-    return this.userId;
+  getRecipientId(): string {
+    return this.recipientId;
+  }
+
+  getRecipientType(): string {
+    return this.recipientType;
   }
 
   getChannel(): NotificationChannel {

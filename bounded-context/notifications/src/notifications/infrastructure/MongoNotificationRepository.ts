@@ -6,7 +6,8 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface NotificationDocument extends Document {
   id: string;
-  userId: string;
+  recipientId: string;
+  recipientType: string;
   channel: string;
   message: string;
   status: string;
@@ -15,7 +16,8 @@ interface NotificationDocument extends Document {
 
 const notificationSchema = new Schema<NotificationDocument>({
   id: { type: String, required: true, unique: true },
-  userId: { type: String, required: true },
+  recipientId: { type: String, required: true },
+  recipientType: { type: String, required: true },
   channel: { type: String, required: true },
   message: { type: String, required: true },
   status: { type: String, required: true },
@@ -32,7 +34,8 @@ export class MongoNotificationRepository implements NotificationRepository {
     await NotificationModel.findOneAndUpdate(
       { id: notification.getId() },
       {
-        userId: notification.getUserId(),
+        recipientId: notification.getRecipientId(),
+        recipientType: notification.getRecipientType(),
         channel: notification.getChannel().getValue(),
         message: notification.getMessage(),
         status: notification.getStatus().getValue(),
@@ -42,9 +45,9 @@ export class MongoNotificationRepository implements NotificationRepository {
     ).exec();
   }
 
-  async findByUserId(userId: string): Promise<Notification[]> {
+  async findByRecipientId(recipientId: string): Promise<Notification[]> {
     const notificationDocuments = await NotificationModel.find({
-      userId,
+      recipientId,
     }).exec();
     return notificationDocuments.map(this.mapDocumentToNotification);
   }
@@ -60,7 +63,8 @@ export class MongoNotificationRepository implements NotificationRepository {
     notificationDocument: NotificationDocument
   ): Notification {
     return new Notification(
-      notificationDocument.userId,
+      notificationDocument.recipientId,
+      notificationDocument.recipientType as "User" | "Contact",
       NotificationChannel.from(notificationDocument.channel),
       notificationDocument.message,
       NotificationStatus.from(notificationDocument.status),

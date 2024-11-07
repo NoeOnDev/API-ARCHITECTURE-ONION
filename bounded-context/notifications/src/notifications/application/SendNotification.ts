@@ -11,12 +11,14 @@ export class SendNotification {
   ) {}
 
   async execute(
-    userId: string,
+    recipientId: string,
+    recipientType: "User" | "Contact",
     message: string,
     channel: NotificationChannel
   ): Promise<void> {
     const notification = new Notification(
-      userId,
+      recipientId,
+      recipientType,
       channel,
       message,
       NotificationStatus.PENDING
@@ -26,12 +28,11 @@ export class SendNotification {
 
     try {
       await this.notificationService.send(channel, message);
-
       notification.markAsSent();
     } catch (error) {
       notification.markAsFailed();
     }
-    
+
     await this.notificationRepository.save(notification);
   }
 }
