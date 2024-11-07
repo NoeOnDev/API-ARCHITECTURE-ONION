@@ -14,12 +14,14 @@ import { DeleteContactByIdController } from "./http/controllers/deleteContactByI
 
 import { PostgresContactRepository } from "./PostgresContactRepository";
 
+import { rabbitmqEventPublisher } from "./eventPublishers/rabbitmqEventPublisher";
+
 const contactRepository = new PostgresContactRepository(pool);
 
 const findContactById = new FindContactById(contactRepository);
 const findContactByEmail = new FindContactByEmail(contactRepository);
 const deleteContactById = new DeleteContactById(contactRepository);
-const saveContact = new SaveContact(contactRepository);
+const saveContact = new SaveContact(contactRepository, rabbitmqEventPublisher);
 const findAllContacts = new FindAllContacts(contactRepository);
 
 const saveContactController = new SaveContactController(saveContact);
