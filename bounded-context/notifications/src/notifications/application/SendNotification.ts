@@ -14,7 +14,8 @@ export class SendNotification {
     recipientId: string,
     recipientType: "User" | "Contact",
     message: string,
-    channel: NotificationChannel
+    channel: NotificationChannel,
+    recipient: string
   ): Promise<void> {
     const notification = new Notification(
       recipientId,
@@ -27,10 +28,17 @@ export class SendNotification {
     await this.notificationRepository.save(notification);
 
     try {
-      await this.notificationService.send(channel, message);
+      await this.notificationService.send(channel, message, recipient);
       notification.markAsSent();
+      console.log(
+        `Notification sent successfully to ${recipient} via ${channel.getValue()}`
+      );
     } catch (error) {
       notification.markAsFailed();
+      console.error(
+        `Failed to send notification to ${recipient} via ${channel.getValue()}:`,
+        error
+      );
     }
 
     await this.notificationRepository.save(notification);

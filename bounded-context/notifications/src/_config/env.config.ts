@@ -13,6 +13,7 @@ const envSchema = Joi.object({
   TWILIO_AUTH_TOKEN: Joi.string().required(),
   TWILIO_PHONE_NUMBER: Joi.string().required(),
   MONGO_URI: Joi.string().required(),
+  RABBIT_URL: Joi.string().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -31,6 +32,7 @@ const {
   TWILIO_AUTH_TOKEN,
   TWILIO_PHONE_NUMBER,
   MONGO_URI,
+  RABBIT_URL,
 } = envVars;
 
 interface Env {
@@ -51,6 +53,9 @@ interface Env {
   mongo: {
     MONGO_URI: string;
   };
+  rabbitmq: {
+    RABBIT_URL: string;
+  };
 }
 
 export const env: Env = {
@@ -70,5 +75,8 @@ export const env: Env = {
   },
   mongo: {
     MONGO_URI: MONGO_URI,
+  },
+  rabbitmq: {
+    RABBIT_URL: RABBIT_URL,
   },
 };

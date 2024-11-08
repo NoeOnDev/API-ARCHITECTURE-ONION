@@ -20,7 +20,8 @@ export class ValidateTokenController {
         res.status(400).send({ error: "Invalid token" });
       }
     } catch (error) {
-      res.status(500).send("Error validating token");
+      console.error("Error validating token:", error);
+      res.status(500).send({ error: "Error validating token" });
     }
   }
 }
