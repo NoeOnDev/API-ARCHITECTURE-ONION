@@ -18,6 +18,10 @@ export class LoginUser {
       throw new Error("Invalid credentials");
     }
 
+    if (!user.isVerified()) {
+      throw new Error("Account not verified");
+    }
+
     const isPasswordValid = await this.hashService.compare(
       password,
       user.getPassword()
