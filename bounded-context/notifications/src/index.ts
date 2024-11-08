@@ -6,6 +6,7 @@ import rateLimit from "express-rate-limit";
 import { env } from "./_config/env.config";
 import { connectWithRetry } from "./_helpers/odmConnection";
 import tokenRoutes from "./tokens/infrastructure/http/routes/tokenRoutes";
+
 import { createRabbitMQChannel } from "./_config/rabbitmq.config";
 import { UserCreatedConsumer } from "./notifications/infrastructure/consumers/UserCreatedConsumer";
 import { ContactCreatedConsumer } from "./notifications/infrastructure/consumers/ContactCreatedConsumer";

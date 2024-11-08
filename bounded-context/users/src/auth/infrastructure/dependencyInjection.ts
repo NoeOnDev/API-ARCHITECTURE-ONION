@@ -2,6 +2,7 @@ import { contactRepository } from "../../contacts/infrastructure/dependencyInjec
 import { userRepository } from "../../users/infrastructure/dependencyInjection";
 
 import { RegisterUser } from "../application/RegisterUser";
+import { VerifyUser } from "../application/VerifyUser";
 
 import { RegisterUserController } from "./http/controllers/RegisterUserController";
 
@@ -16,7 +17,8 @@ const registerUser = new RegisterUser(
   hashService,
   rabbitmqEventPublisher
 );
+const verifyUser = new VerifyUser(userRepository, contactRepository);
 
 const registerUserController = new RegisterUserController(registerUser);
 
-export { registerUserController };
+export { registerUserController, verifyUser };
