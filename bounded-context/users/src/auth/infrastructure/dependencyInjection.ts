@@ -8,6 +8,7 @@ import { RegisterUserController } from "./http/controllers/RegisterUserControlle
 
 import { Argon2HashService } from "./services/Argon2HashService";
 import { rabbitmqEventPublisher } from "./eventPublishers/rabbitmqEventPublisher";
+import { rabbitmqEventPublisherWelcome } from "./eventPublishers/rabbitmqEventPublisherWelcome";
 
 const hashService = new Argon2HashService();
 
@@ -17,7 +18,7 @@ const registerUser = new RegisterUser(
   hashService,
   rabbitmqEventPublisher
 );
-const verifyUser = new VerifyUser(userRepository, contactRepository);
+const verifyUser = new VerifyUser(userRepository, contactRepository, rabbitmqEventPublisherWelcome);
 
 const registerUserController = new RegisterUserController(registerUser);
 
