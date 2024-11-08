@@ -1,10 +1,10 @@
 import { ContactCreatedEvent } from "../../domain/events/ContactCreatedEvent";
-import { createChannel } from "../../../_config/rabbitmq.config";
+import { createRabbitMQChannel } from "../../../_config/rabbitmq.config";
 
 export async function rabbitmqEventPublisher(
   event: ContactCreatedEvent
 ): Promise<void> {
-  const channel = await createChannel();
+  const channel = await createRabbitMQChannel();
   const eventPayload = {
     contactId: event.contactId,
     email: event.email,
