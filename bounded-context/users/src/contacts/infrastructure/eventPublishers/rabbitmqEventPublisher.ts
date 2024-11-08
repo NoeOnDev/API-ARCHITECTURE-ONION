@@ -10,7 +10,8 @@ export async function rabbitmqEventPublisher(
     email: event.email,
     phone: event.phone,
   };
-  channel.assertQueue("contact_created", { durable: true });
+
+  await channel.assertQueue("contact_created", { durable: true });
   channel.sendToQueue(
     "contact_created",
     Buffer.from(JSON.stringify(eventPayload)),
