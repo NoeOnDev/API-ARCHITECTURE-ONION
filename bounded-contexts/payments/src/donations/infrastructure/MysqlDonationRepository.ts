@@ -3,9 +3,8 @@ import { Donation } from "../domain/Donation";
 import { DonationRepository } from "../domain/DonationRepository";
 import { pool } from "../../_config/db.config";
 import { DonationStatus } from "../domain/value-objects/DonationStatus";
-import { Payment } from "../../payments/domain/Payment";
-import { PaymentStatus } from "../../payments/domain/value-objects/PaymentStatus";
 import { RowDataPacket } from "mysql2";
+import { Payment } from "../../payments/domain/Payment";
 
 export class MysqlDonationRepository implements DonationRepository {
   private pool: Pool;
@@ -27,24 +26,25 @@ export class MysqlDonationRepository implements DonationRepository {
       donation.getCreatedAt(),
       donation.getPayment() ? donation.getPayment()!.getId() : null,
     ];
-    await this.pool.execute(query, values);
+
+    try {
+      await this.pool.execute(query, values);
+    } catch (error) {
+      console.error("Error saving donation:", error);
+      throw new Error("Failed to save donation");
+    }
   }
 
   async findById(id: string): Promise<Donation | null> {
-    const query = `
-      SELECT * FROM donations WHERE id = ?
-    `;
-    const [rows] = await this.pool.execute<RowDataPacket[]>(query, [id]);
-    if (rows.length > 0) {
-      const row = rows[0];
-      const donation = new Donation(
+    const row = await this.findOneById<RowDataPacket>(id, "donations");
+    if (row) {
+      return new Donation(
         row.amount,
         row.userId,
         row.id,
         DonationStatus.from(row.status),
-        row.paymentId ? await this.findPaymentById(row.paymentId) : null
+        row.paymentId
       );
-      return donation;
     }
     return null;
   }
@@ -63,23 +63,65 @@ export class MysqlDonationRepository implements DonationRepository {
       donation.getPayment() ? donation.getPayment()!.getId() : null,
       donation.getId(),
     ];
-    await this.pool.execute(query, values);
+
+    try {
+      await this.pool.execute(query, values);
+    } catch (error) {
+      console.error("Error updating donation:", error);
+      throw new Error("Failed to update donation");
+    }
   }
 
-  private async findPaymentById(paymentId: string): Promise<Payment | null> {
-    const query = `
-      SELECT * FROM payments WHERE id = ?
-    `;
-    const [rows] = await this.pool.execute<RowDataPacket[]>(query, [paymentId]);
-    if (rows.length > 0) {
-      const row = rows[0];
-      const payment = new Payment(
-        row.paymentId,
-        PaymentStatus.from(row.status),
-        row.id
+  private async findOneById<T>(
+    id: string,
+    tableName: string
+  ): Promise<T | null> {
+    const query = `SELECT * FROM ?? WHERE id = ?`;
+    const [rows] = await this.pool.execute<RowDataPacket[]>(query, [
+      tableName,
+      id,
+    ]);
+    return rows.length > 0 ? (rows[0] as T) : null;
+  }
+
+  async saveDonationAndPayment(
+    donation: Donation,
+    payment: Payment
+  ): Promise<void> {
+    const connection = await this.pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      await connection.execute(
+        `INSERT INTO payments (id, paymentId, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?)`,
+        [
+          payment.getId(),
+          payment.getPaymentId(),
+          payment.getStatus().getValue(),
+          payment.getCreatedAt(),
+          payment.getUpdatedAt(),
+        ]
       );
-      return payment;
+
+      await connection.execute(
+        `INSERT INTO donations (id, amount, userId, status, createdAt, paymentId) VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          donation.getId(),
+          donation.getAmount(),
+          donation.getUserId(),
+          donation.getStatus().getValue(),
+          donation.getCreatedAt(),
+          payment.getId(),
+        ]
+      );
+
+      await connection.commit();
+    } catch (error) {
+      await connection.rollback();
+      console.error("Transaction failed:", error);
+      throw new Error("Failed to save donation and payment in transaction");
+    } finally {
+      connection.release();
     }
-    return null;
   }
 }

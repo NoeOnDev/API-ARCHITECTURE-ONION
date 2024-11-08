@@ -24,22 +24,19 @@ export class MysqlPaymentRepository implements PaymentRepository {
       payment.getCreatedAt(),
       payment.getUpdatedAt(),
     ];
-    await this.pool.execute(query, values);
+
+    try {
+      await this.pool.execute(query, values);
+    } catch (error) {
+      console.error("Error saving payment:", error);
+      throw new Error("Failed to save payment");
+    }
   }
 
   async findById(id: string): Promise<Payment | null> {
-    const query = `
-      SELECT * FROM payments WHERE id = ?
-    `;
-    const [rows] = await this.pool.execute<RowDataPacket[]>(query, [id]);
-    if (rows.length > 0) {
-      const row = rows[0];
-      const payment = new Payment(
-        row.paymentId,
-        PaymentStatus.from(row.status),
-        row.id
-      );
-      return payment;
+    const row = await this.findOneById<RowDataPacket>(id, "payments");
+    if (row) {
+      return new Payment(row.paymentId, PaymentStatus.from(row.status), row.id);
     }
     return null;
   }
@@ -57,6 +54,24 @@ export class MysqlPaymentRepository implements PaymentRepository {
       payment.getUpdatedAt(),
       payment.getId(),
     ];
-    await this.pool.execute(query, values);
+
+    try {
+      await this.pool.execute(query, values);
+    } catch (error) {
+      console.error("Error updating payment:", error);
+      throw new Error("Failed to update payment");
+    }
+  }
+
+  private async findOneById<T>(
+    id: string,
+    tableName: string
+  ): Promise<T | null> {
+    const query = `SELECT * FROM ?? WHERE id = ?`;
+    const [rows] = await this.pool.execute<RowDataPacket[]>(query, [
+      tableName,
+      id,
+    ]);
+    return rows.length > 0 ? (rows[0] as T) : null;
   }
 }
