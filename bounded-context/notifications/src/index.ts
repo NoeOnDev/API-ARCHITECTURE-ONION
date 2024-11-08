@@ -11,10 +11,6 @@ const port = env.port.PORT;
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (_req, res) => {
-  res.send("Welcome to the notifications API 🚀");
-});
-
 app.use(tokenRoutes);
 
 connectWithRetry(10, 10000, () => {

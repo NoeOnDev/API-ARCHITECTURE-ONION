@@ -9,7 +9,7 @@ export async function connectWithRetry(
   for (let i = 0; i < retries; i++) {
     try {
       await mongoose.connect(mongoConfig.url);
-      console.log("MongoDB connection successful ✅");
+      console.log("Database connection successful ✅");
       callback();
       return;
     } catch (error) {

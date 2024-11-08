@@ -13,10 +13,6 @@ const port = env.port.PORT;
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (_req, res) => {
-  res.send("Welcome to the users API 🚀");
-});
-
 app.use(contactRoutes);
 app.use(userRoutes);
 app.use(authRoutes);

@@ -11,32 +11,29 @@ import {
 
 const userRoutes = Router();
 
+userRoutes.get("/", findAllUsersController.handle.bind(findAllUsersController));
 userRoutes.get(
-  "/users",
-  findAllUsersController.handle.bind(findAllUsersController)
-);
-userRoutes.get(
-  "/users/id/:id",
+  "/id/:id",
   findUserByIdController.handle.bind(findUserByIdController)
 );
 userRoutes.get(
-  "/users/username/:username",
+  "/username/:username",
   findUserByUsernameController.handle.bind(findUserByUsernameController)
 );
 userRoutes.get(
-  "/users/email/:email",
+  "/email/:email",
   findUserByEmailController.handle.bind(findUserByEmailController)
 );
 userRoutes.delete(
-  "/users/id/:id",
+  "/id/:id",
   deleteUserByIdController.handle.bind(deleteUserByIdController)
 );
 userRoutes.get(
-  "/users/exists/username/:username",
+  "/exists/username/:username",
   existsUserByUsernameController.handle.bind(existsUserByUsernameController)
 );
 userRoutes.get(
-  "/users/exists/email/:email",
+  "/exists/email/:email",
   existsUserByEmailController.handle.bind(existsUserByEmailController)
 );
 
