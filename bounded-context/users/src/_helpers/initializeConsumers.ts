@@ -8,5 +8,6 @@ export const initializeConsumers = async () => {
   const channel = await createRabbitMQChannel();
 
   const userVerifiedConsumer = new UserVerifiedConsumer(channel, verifyUser);
-  userVerifiedConsumer.consume();
+
+  await userVerifiedConsumer.consume();
 };

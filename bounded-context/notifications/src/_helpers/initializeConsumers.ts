@@ -15,18 +15,18 @@ export const initializeConsumers = async () => {
     generateTokenForUser,
     sendNotification
   );
-  await userCreatedConsumer.consume();
 
   const contactCreatedConsumer = new ContactCreatedConsumer(
     channel,
     sendNotification
   );
-  await contactCreatedConsumer.consume();
 
   const userWelcomeConsumer = new UserWelcomeConsumer(
     channel,
     sendNotification
   );
 
+  await userCreatedConsumer.consume();
+  await contactCreatedConsumer.consume();
   await userWelcomeConsumer.consume();
 };
