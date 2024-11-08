@@ -1,5 +1,4 @@
-import { dbConfig } from "../_config/db.config";
-import mysql2 from "mysql2/promise";
+import { pool } from "../_config/db.config";
 
 export async function connectWithRetry(
   retries: number,
@@ -8,10 +7,10 @@ export async function connectWithRetry(
 ) {
   for (let i = 0; i < retries; i++) {
     try {
-      const connection = await mysql2.createConnection(dbConfig);
+      const connection = await pool.getConnection();
       console.log("Database connection successful ✅");
       callback();
-      await connection.end();
+      connection.release();
       return;
     } catch (error) {
       console.error(
