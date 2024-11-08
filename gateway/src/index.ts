@@ -22,6 +22,7 @@ app.use(limiter);
 
 app.use("/api/v1/users", proxy(env.services.USERS_SERVICE_URL));
 app.use("/api/v1/notifications", proxy(env.services.NOTIFICATIONS_SERVICE_URL));
+app.use("/api/v1/payments", proxy(env.services.PAYMENTS_SERVICE_URL));
 
 app.listen(port, () => {
   console.log(`Gateway running at http://localhost:${port} 🚀`);
