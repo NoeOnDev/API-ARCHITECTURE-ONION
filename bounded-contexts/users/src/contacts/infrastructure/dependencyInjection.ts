@@ -14,7 +14,7 @@ import { DeleteContactByIdController } from "./http/controllers/deleteContactByI
 
 import { PostgresContactRepository } from "./PostgresContactRepository";
 
-import { rabbitmqEventPublisher } from "./eventPublishers/rabbitmqEventPublisher";
+import { rabbitmqEventPublisher } from "../../shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const contactRepository = new PostgresContactRepository(pool);
 

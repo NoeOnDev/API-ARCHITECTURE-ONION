@@ -1,19 +1,23 @@
-import { UserCreatedEvent } from "../../domain/events/UserCreatedEvent";
+import { NotificationEvent } from "../../domain/events/NotificationEvent";
 import { createRabbitMQChannel } from "../../../_config/rabbitmq.config";
 
 export async function rabbitmqEventPublisher(
-  event: UserCreatedEvent
+  event: NotificationEvent
 ): Promise<void> {
   const channel = await createRabbitMQChannel();
   const eventPayload = {
-    userId: event.userId,
+    identifier: event.identifier,
+    recipientType: event.recipientType,
     email: event.email,
     phone: event.phone,
+    message: event.message,
+    channel: event.channel,
+    type: event.type,
   };
-  
-  await channel.assertQueue("user_created", { durable: true });
+
+  await channel.assertQueue("service_notification", { durable: true });
   channel.sendToQueue(
-    "user_created",
+    "service_notification",
     Buffer.from(JSON.stringify(eventPayload)),
     {
       persistent: true,

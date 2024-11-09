@@ -2,14 +2,14 @@ import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { HashService } from "../domain/services/HashService";
-import { UserCreatedEvent } from "../domain/events/UserCreatedEvent";
+import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
 
 export class RegisterUser {
   constructor(
     private userRepository: UserRepository,
     private contactRepository: ContactRepository,
     private hashService: HashService,
-    private eventPublisher: (event: UserCreatedEvent) => Promise<void>
+    private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
   async execute(
@@ -29,11 +29,19 @@ export class RegisterUser {
     const user = new User(username, hashedPassword, contact);
     await this.userRepository.save(user);
 
-    const event = new UserCreatedEvent(
+    const message =
+      "Welcome! Here is your verification code to activate your account.";
+
+    const event = new NotificationEvent(
       user.getId(),
+      "User",
       user.getEmail(),
-      user.getPhone()
+      user.getPhone(),
+      message,
+      "WHATSAPP",
+      "2FA"
     );
+
     await this.eventPublisher(event);
   }
 }

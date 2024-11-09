@@ -1,12 +1,12 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
-import { UserWelcomeEvent } from "../domain/events/UserWelcomeEvent";
+import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
 
 export class VerifyUser {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly contactRepository: ContactRepository,
-    private readonly eventPublisher: (event: UserWelcomeEvent) => Promise<void>
+    private readonly eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
   async execute(userId: string): Promise<void> {
@@ -23,11 +23,18 @@ export class VerifyUser {
     await this.userRepository.save(user);
     await this.contactRepository.save(contact);
 
-    const welcomeEvent = new UserWelcomeEvent(
+    const message = "Welcome to our platform! Your registration is complete.";
+
+    const welcomeEvent = new NotificationEvent(
       user.getId(),
+      "User",
       user.getEmail(),
-      user.getPhone()
+      user.getPhone(),
+      message,
+      "EMAIL",
+      "NORMAL"
     );
+
     await this.eventPublisher(welcomeEvent);
   }
 }

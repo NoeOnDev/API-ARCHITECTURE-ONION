@@ -9,8 +9,7 @@ import { RegisterUserController } from "./http/controllers/RegisterUserControlle
 import { LoginUserController } from "./http/controllers/LoginUserController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
-import { rabbitmqEventPublisher } from "./eventPublishers/rabbitmqEventPublisher";
-import { rabbitmqEventPublisherWelcome } from "./eventPublishers/rabbitmqEventPublisherWelcome";
+import { rabbitmqEventPublisher } from "../../shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();
 
@@ -23,7 +22,7 @@ const registerUser = new RegisterUser(
 const verifyUser = new VerifyUser(
   userRepository,
   contactRepository,
-  rabbitmqEventPublisherWelcome
+  rabbitmqEventPublisher
 );
 const loginUser = new LoginUser(userRepository, hashService);
 

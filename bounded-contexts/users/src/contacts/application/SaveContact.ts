@@ -1,11 +1,11 @@
 import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
-import { ContactCreatedEvent } from "../domain/events/ContactCreatedEvent";
+import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
 
 export class SaveContact {
   constructor(
     private contactRepository: ContactRepository,
-    private eventPublisher: (event: ContactCreatedEvent) => Promise<void>
+    private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
   async execute(
@@ -17,10 +17,17 @@ export class SaveContact {
     const contact = new Contact(firstName, lastName, email, phone);
     await this.contactRepository.save(contact);
 
-    const event = new ContactCreatedEvent(
+    const message =
+      "Welcome! Complete your registration to enjoy our services.";
+
+    const event = new NotificationEvent(
       contact.getId(),
-      contact.getEmail(),
-      contact.getPhone()
+      "Contact",
+      email,
+      phone,
+      message,
+      "EMAIL",
+      "NORMAL"
     );
 
     await this.eventPublisher(event);
