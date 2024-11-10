@@ -16,7 +16,7 @@ export class RegisterUser {
     contactId: string,
     username: string,
     password: string
-  ): Promise<void> {
+  ): Promise<User> {
     const contact = await this.contactRepository.findById(contactId);
     if (!contact || contact.getStatus() !== "LEAD") {
       throw new Error("Contact not found or already registered as user");
@@ -43,5 +43,7 @@ export class RegisterUser {
     );
 
     await this.eventPublisher(event);
+
+    return user;
   }
 }

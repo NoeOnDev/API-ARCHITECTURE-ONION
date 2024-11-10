@@ -7,8 +7,20 @@ export class RegisterUserController {
   async handle(req: Request, res: Response): Promise<void> {
     const { contactId, username, password } = req.body;
     try {
-      await this.registerUser.execute(contactId, username, password);
-      res.status(201).send("User created successfully");
+      const user = await this.registerUser.execute(
+        contactId,
+        username,
+        password
+      );
+      res.status(201).json({
+        message: "User created successfully",
+        user: {
+          id: user.getId(),
+          username: user.getUsername(),
+          email: user.getContact().getEmail(),
+          phone: user.getContact().getPhone(),
+        },
+      });
     } catch (error) {
       res.status(500).send("Error saving user");
     }
