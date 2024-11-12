@@ -35,7 +35,11 @@ const requestPasswordChange = new RequestPasswordChange(
   rabbitmqEventPublisher
 );
 
-const updatePassword = new UpdatePassword(userRepository, hashService);
+const updatePassword = new UpdatePassword(
+  userRepository,
+  hashService,
+  rabbitmqEventPublisher
+);
 
 const registerUserController = new RegisterUserController(registerUser);
 const loginUserController = new LoginUserController(loginUser);

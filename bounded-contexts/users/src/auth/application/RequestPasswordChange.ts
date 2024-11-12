@@ -24,7 +24,7 @@ export class RequestPasswordChange {
       user.getEmail(),
       user.getPhone(),
       message,
-      "EMAIL",
+      "WHATSAPP",
       "2FA"
     );
 
