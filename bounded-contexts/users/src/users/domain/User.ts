@@ -45,6 +45,10 @@ export class User {
     return this.contact.getPhone();
   }
 
+  getVerificationDate(): Date | null {
+    return this.verified;
+  }
+
   promoteToUser(): void {
     this.contact.promoteToUser();
   }
@@ -61,7 +65,7 @@ export class User {
     return this.verified !== null;
   }
 
-  getVerificationDate(): Date | null {
-    return this.verified;
+  updatePassword(newHashedPassword: string): void {
+    this.password = newHashedPassword;
   }
 }
