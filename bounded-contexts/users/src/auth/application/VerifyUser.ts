@@ -1,6 +1,6 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
-import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
+import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 
 export class VerifyUser {
   constructor(

@@ -9,7 +9,7 @@ import { RegisterUserController } from "./http/controllers/RegisterUserControlle
 import { LoginUserController } from "./http/controllers/LoginUserController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
-import { rabbitmqEventPublisher } from "../../shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
+import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();
 

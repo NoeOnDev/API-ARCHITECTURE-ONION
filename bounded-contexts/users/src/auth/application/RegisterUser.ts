@@ -2,7 +2,7 @@ import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { HashService } from "../domain/services/HashService";
-import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
+import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 
 export class RegisterUser {
   constructor(

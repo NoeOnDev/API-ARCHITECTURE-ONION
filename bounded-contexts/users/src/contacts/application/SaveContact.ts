@@ -1,6 +1,6 @@
 import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
-import { NotificationEvent } from "../../shared/domain/events/NotificationEvent";
+import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 
 export class SaveContact {
   constructor(
