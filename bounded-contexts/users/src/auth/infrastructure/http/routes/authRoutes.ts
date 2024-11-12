@@ -4,6 +4,7 @@ import {
   loginUserController,
   requestPasswordChangeController,
   updatePasswordController,
+  resendNotificationController,
 } from "../../dependencyInjection";
 
 const authRoutes = Router();
@@ -23,6 +24,11 @@ authRoutes.post(
 authRoutes.post(
   "/update-password",
   updatePasswordController.handle.bind(updatePasswordController)
+);
+
+authRoutes.post(
+  "/resend-notification",
+  resendNotificationController.handle.bind(resendNotificationController)
 );
 
 export default authRoutes;

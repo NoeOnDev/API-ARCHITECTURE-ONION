@@ -13,6 +13,10 @@ export class RequestPasswordChange {
       throw new Error("User not found");
     }
 
+    if (!user.isVerified()) {
+      throw new Error("User not verified");
+    }
+
     const message =
       "We have received your password change request. " +
       "You will receive a verification code shortly to proceed with the password change process. " +
