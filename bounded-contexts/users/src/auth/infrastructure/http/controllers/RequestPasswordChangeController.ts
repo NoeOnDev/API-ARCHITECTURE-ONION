@@ -13,9 +13,10 @@ export class RequestPasswordChangeController {
     }
 
     try {
-      await this.requestPasswordChange.execute(email);
+      const userId = await this.requestPasswordChange.execute(email);
       res.status(200).json({
         message: "Password change request has been processed successfully",
+        userId: userId,
       });
     } catch (error) {
       if (error instanceof Error && error.message === "User not found") {

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { ValidateToken } from "../../../application/ValidateToken";
+
 export class ValidateTokenController {
   constructor(private validateToken: ValidateToken) {}
 
@@ -14,9 +15,11 @@ export class ValidateTokenController {
     }
 
     try {
-      const isValid = await this.validateToken.execute(userId, code, eventType);
-      if (isValid) {
-        res.status(200).send({ message: "Token is valid" });
+      const result = await this.validateToken.execute(userId, code, eventType);
+      if (result.isValid) {
+        res
+          .status(200)
+          .send({ message: "Token is valid", userId: result.userId });
       } else {
         res.status(400).send({ error: "Invalid token" });
       }

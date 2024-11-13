@@ -1,5 +1,6 @@
 import { TokenRepository } from "../domain/TokenRepository";
 import { UserVerifiedEvent } from "../domain/events/UserVerifiedEvent";
+
 export class ValidateToken {
   constructor(
     private tokenRepository: TokenRepository,
@@ -10,7 +11,7 @@ export class ValidateToken {
     userId: string,
     code: string,
     eventType: string
-  ): Promise<boolean> {
+  ): Promise<{ isValid: boolean; userId?: string }> {
     const token = await this.tokenRepository.findByCode(code);
 
     if (
@@ -27,9 +28,9 @@ export class ValidateToken {
         await this.eventPublisher(event);
       }
 
-      return true;
+      return { isValid: true, userId: token.getUserId() };
     }
 
-    return false;
+    return { isValid: false };
   }
 }

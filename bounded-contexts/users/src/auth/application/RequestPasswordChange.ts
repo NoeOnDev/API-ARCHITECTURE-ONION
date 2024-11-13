@@ -7,7 +7,7 @@ export class RequestPasswordChange {
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
-  async execute(email: string): Promise<void> {
+  async execute(email: string): Promise<string> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
       throw new Error("User not found");
@@ -33,5 +33,7 @@ export class RequestPasswordChange {
     );
 
     await this.eventPublisher(event);
+
+    return user.getId();
   }
 }
