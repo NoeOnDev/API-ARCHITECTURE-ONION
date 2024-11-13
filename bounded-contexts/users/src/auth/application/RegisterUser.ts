@@ -18,7 +18,7 @@ export class RegisterUser {
     password: string
   ): Promise<User> {
     const contact = await this.contactRepository.findById(contactId);
-    if (!contact || contact.getStatus() !== "LEAD") {
+    if (!contact || contact.getStatus().getValue() !== "LEAD") {
       throw new Error("Contact not found or already registered as user");
     }
 

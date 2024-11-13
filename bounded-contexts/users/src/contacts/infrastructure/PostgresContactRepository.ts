@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
+import { ContactStatus } from "../domain/value-objects/ContactStatus";
 
 export class PostgresContactRepository implements ContactRepository {
   constructor(private pool: Pool) {}
@@ -11,7 +12,7 @@ export class PostgresContactRepository implements ContactRepository {
       row.last_name,
       row.email,
       row.phone,
-      row.status,
+      ContactStatus.fromValue(row.status),
       row.id
     );
   }
@@ -33,7 +34,7 @@ export class PostgresContactRepository implements ContactRepository {
       contact.getLastName(),
       contact.getEmail(),
       contact.getPhone(),
-      contact.getStatus(),
+      contact.getStatus().getValue(),
     ];
     await this.pool.query(query, values);
   }

@@ -54,7 +54,7 @@ export class User {
   }
 
   isContactPromotedToUser(): boolean {
-    return this.contact.getStatus() === "USER";
+    return this.contact.getStatus().getValue() === "USER";
   }
 
   verifyUser(): void {
