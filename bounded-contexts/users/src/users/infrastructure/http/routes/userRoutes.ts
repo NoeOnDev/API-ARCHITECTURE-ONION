@@ -5,8 +5,6 @@ import {
   findUserByUsernameController,
   findUserByEmailController,
   deleteUserByIdController,
-  existsUserByUsernameController,
-  existsUserByEmailController,
 } from "../../dependencyInjection";
 
 const userRoutes = Router();
@@ -27,14 +25,6 @@ userRoutes.get(
 userRoutes.delete(
   "/id/:id",
   deleteUserByIdController.handle.bind(deleteUserByIdController)
-);
-userRoutes.get(
-  "/exists/username/:username",
-  existsUserByUsernameController.handle.bind(existsUserByUsernameController)
-);
-userRoutes.get(
-  "/exists/email/:email",
-  existsUserByEmailController.handle.bind(existsUserByEmailController)
 );
 
 export default userRoutes;
