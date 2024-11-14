@@ -3,6 +3,9 @@ import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { ContactNotFoundError } from "../../_shared/domain/errors/ContactNotFoundError";
+import { ContactAlreadyRegisteredError } from "../../_shared/domain/errors/ContactAlreadyRegisteredError";
+import { UsernameAlreadyExistsError } from "../../_shared/domain/errors/UsernameAlreadyExistsError";
 
 export class RegisterUser {
   constructor(
@@ -18,12 +21,19 @@ export class RegisterUser {
     password: string
   ): Promise<User> {
     const contact = await this.contactRepository.findById(contactId);
-    if (!contact || contact.getStatus().getValue() !== "LEAD") {
-      throw new Error("Contact not found or already registered as user");
+
+    if (!contact) {
+      throw new ContactNotFoundError();
+    }
+
+    if (contact.getStatus().getValue() !== "LEAD") {
+      throw new ContactAlreadyRegisteredError();
     }
 
     const existingUser = await this.userRepository.findByUsername(username);
-    if (existingUser) throw new Error("Username already exists");
+    if (existingUser) {
+      throw new UsernameAlreadyExistsError();
+    }
 
     const hashedPassword = await this.hashService.hash(password);
     const user = new User(username, hashedPassword, contact);
@@ -43,7 +53,6 @@ export class RegisterUser {
     );
 
     await this.eventPublisher(event);
-
     return user;
   }
 }

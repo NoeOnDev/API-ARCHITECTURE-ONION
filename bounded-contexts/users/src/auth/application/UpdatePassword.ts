@@ -1,6 +1,8 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
+import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
 
 export class UpdatePassword {
   constructor(
@@ -12,11 +14,11 @@ export class UpdatePassword {
   async execute(userId: string, newPassword: string): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
     if (!user.isVerified()) {
-      throw new Error("User not verified");
+      throw new AccountNotVerifiedError();
     }
 
     const hashedPassword = await this.hashService.hash(newPassword);

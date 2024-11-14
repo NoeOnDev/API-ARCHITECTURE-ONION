@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { LoginUser } from "../../../application/LoginUser";
+import { DomainError } from "../../../../_shared/domain/errors/DomainError";
 
 export class LoginUserController {
   constructor(private loginUser: LoginUser) {}
@@ -10,7 +11,11 @@ export class LoginUserController {
       const user = await this.loginUser.execute(identifier, password);
       res.status(200).json(user);
     } catch (error) {
-      res.status(401).send("Invalid credentials");
+      if (error instanceof DomainError) {
+        res.status(error.statusCode).json({ error: error.message });
+      } else {
+        res.status(500).json({ message: "Login failed" });
+      }
     }
   }
 }

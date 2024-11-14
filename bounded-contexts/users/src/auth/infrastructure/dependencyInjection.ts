@@ -15,9 +15,11 @@ import { UpdatePasswordController } from "./http/controllers/UpdatePasswordContr
 import { ResendNotificationController } from "./http/controllers/ResendNotificationController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
+import { InMemoryNotificationMessageProvider } from "./InMemoryNotificationMessageProvider";
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();
+const messageProvider = new InMemoryNotificationMessageProvider();
 
 const registerUser = new RegisterUser(
   userRepository,
@@ -45,6 +47,7 @@ const updatePassword = new UpdatePassword(
 
 const resendNotification = new ResendNotification(
   userRepository,
+  messageProvider,
   rabbitmqEventPublisher
 );
 

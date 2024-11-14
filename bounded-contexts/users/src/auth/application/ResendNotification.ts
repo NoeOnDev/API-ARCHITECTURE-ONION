@@ -1,31 +1,26 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { NotificationType } from "../domain/NotificationType";
+import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
+import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class ResendNotification {
   constructor(
     private userRepository: UserRepository,
+    private messageProvider: NotificationMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
-  async execute(userId: string, notificationType: string): Promise<void> {
+  async execute(
+    userId: string,
+    notificationType: NotificationType
+  ): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
-    let message: string;
-    if (notificationType === "user_verification") {
-      message =
-        "Welcome! Here is your verification code to activate your account.";
-    } else if (notificationType === "user_password_change") {
-      message =
-        "We have received your password change request. " +
-        "You will receive a verification code shortly to proceed with the password change process. " +
-        "Please follow the instructions to securely update your password.";
-    } else {
-      throw new Error("Invalid notification type");
-    }
-
+    const message = this.messageProvider.getMessage(notificationType);
     const event = new NotificationEvent(
       user.getId(),
       "User",

@@ -1,6 +1,7 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class VerifyUser {
   constructor(
@@ -12,11 +13,10 @@ export class VerifyUser {
   async execute(userId: string): Promise<void> {
     const user = await this.userRepository.findById(userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
     user.verifyUser();
-
     const contact = user.getContact();
     contact.promoteToUser();
 
@@ -24,7 +24,6 @@ export class VerifyUser {
     await this.contactRepository.save(contact);
 
     const message = "Welcome to our platform! Your registration is complete.";
-
     const welcomeEvent = new NotificationEvent(
       user.getId(),
       "User",

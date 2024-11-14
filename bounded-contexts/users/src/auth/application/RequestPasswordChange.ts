@@ -1,5 +1,7 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
+import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
 
 export class RequestPasswordChange {
   constructor(
@@ -10,11 +12,11 @@ export class RequestPasswordChange {
   async execute(email: string): Promise<string> {
     const user = await this.userRepository.findByEmail(email);
     if (!user) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
     if (!user.isVerified()) {
-      throw new Error("User not verified");
+      throw new AccountNotVerifiedError();
     }
 
     const message =
