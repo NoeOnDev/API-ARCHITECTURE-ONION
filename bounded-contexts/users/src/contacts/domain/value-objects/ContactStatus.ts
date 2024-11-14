@@ -1,3 +1,5 @@
+import { InvalidContactStatusError } from "../../../_shared/domain/errors/InvalidContactStatusError";
+
 export class ContactStatus {
   private readonly value: "LEAD" | "USER";
 
@@ -10,7 +12,7 @@ export class ContactStatus {
 
   static fromValue(value: string): ContactStatus {
     if (value !== "LEAD" && value !== "USER") {
-      throw new Error(`Invalid status value: ${value}`);
+      throw new InvalidContactStatusError(value);
     }
     return new ContactStatus(value as "LEAD" | "USER");
   }
