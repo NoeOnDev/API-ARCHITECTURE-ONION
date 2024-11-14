@@ -2,7 +2,6 @@ import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EmailAlreadyInUseError } from "../../_shared/domain/errors/EmailAlreadyInUseError";
-import { ContactStatus } from "../domain/value-objects/ContactStatus";
 
 export class SaveContact {
   constructor(
@@ -17,12 +16,9 @@ export class SaveContact {
     phone: string
   ): Promise<Contact> {
     const existingUserContact =
-      await this.contactRepository.findByEmailAndStatus(
-        email,
-        ContactStatus.USER
-      );
+      await this.contactRepository.findByEmail(email);
 
-    if (existingUserContact) {
+    if (existingUserContact?.getStatus().getValue() === "USER") {
       throw new EmailAlreadyInUseError();
     }
 
