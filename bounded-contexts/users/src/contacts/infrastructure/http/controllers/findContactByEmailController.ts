@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { FindContactByEmail } from "../../../application/FindContactByEmail";
+import { DomainError } from "../../../../_shared/domain/errors/DomainError";
 
 export class FindContactByEmailController {
   constructor(private findContactByEmail: FindContactByEmail) {}
@@ -8,13 +9,13 @@ export class FindContactByEmailController {
     const { email } = req.params;
     try {
       const contact = await this.findContactByEmail.execute(email);
-      if (contact) {
-        res.json(contact);
-      } else {
-        res.status(404).send("Contact not found");
-      }
+      res.json(contact);
     } catch (error) {
-      res.status(500).send("Error retrieving contact");
+      if (error instanceof DomainError) {
+        res.status(error.statusCode).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: "Error retrieving contact" });
+      }
     }
   }
 }

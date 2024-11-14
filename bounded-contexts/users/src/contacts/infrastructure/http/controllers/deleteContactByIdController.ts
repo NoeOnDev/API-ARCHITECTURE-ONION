@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { DeleteContactById } from "../../../application/DeleteContactById";
+import { DomainError } from "../../../../_shared/domain/errors/DomainError";
 
 export class DeleteContactByIdController {
   constructor(private deleteContactById: DeleteContactById) {}
@@ -10,7 +11,11 @@ export class DeleteContactByIdController {
       await this.deleteContactById.execute(id);
       res.status(204).send();
     } catch (error) {
-      res.status(500).send("Error deleting contact");
+      if (error instanceof DomainError) {
+        res.status(error.statusCode).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: "Error deleting contact" });
+      }
     }
   }
 }
