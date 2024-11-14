@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { SaveContact } from "../../../application/SaveContact";
+import { DomainError } from "../../../../_shared/domain/errors/DomainError";
 
 export class SaveContactController {
   constructor(private saveContact: SaveContact) {}
@@ -15,7 +16,11 @@ export class SaveContactController {
       );
       res.status(201).json(contact);
     } catch (error) {
-      res.status(500).send("Error saving contact");
+      if (error instanceof DomainError) {
+        res.status(error.statusCode).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: "Error saving contact" });
+      }
     }
   }
 }

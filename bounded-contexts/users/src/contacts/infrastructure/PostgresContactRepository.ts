@@ -67,4 +67,16 @@ export class PostgresContactRepository implements ContactRepository {
     const query = `DELETE FROM contacts WHERE id = $1`;
     await this.pool.query(query, [id]);
   }
+
+  async findByEmailAndStatus(
+    email: string,
+    status: ContactStatus
+  ): Promise<Contact | null> {
+    const query = `SELECT * FROM contacts WHERE email = $1 AND status = $2`;
+    const result = await this.pool.query(query, [email, status.getValue()]);
+    if (result.rows.length === 0) {
+      return null;
+    }
+    return this.mapRowToContact(result.rows[0]);
+  }
 }
