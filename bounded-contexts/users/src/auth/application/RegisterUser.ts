@@ -6,6 +6,7 @@ import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent
 import { ContactNotFoundError } from "../../_shared/domain/errors/ContactNotFoundError";
 import { ContactAlreadyRegisteredError } from "../../_shared/domain/errors/ContactAlreadyRegisteredError";
 import { UsernameAlreadyExistsError } from "../../_shared/domain/errors/UsernameAlreadyExistsError";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class RegisterUser {
   constructor(
@@ -20,7 +21,8 @@ export class RegisterUser {
     username: string,
     password: string
   ): Promise<User> {
-    const contact = await this.contactRepository.findById(contactId);
+    const identifier = Identifier.fromString(contactId);
+    const contact = await this.contactRepository.findById(identifier);
 
     if (!contact) {
       throw new ContactNotFoundError();

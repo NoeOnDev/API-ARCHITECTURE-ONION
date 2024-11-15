@@ -1,7 +1,8 @@
 import { ContactStatus } from "./value-objects/ContactStatus";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class Contact {
-  private id: string;
+  private id: Identifier;
   private firstName: string;
   private lastName: string;
   private email: string;
@@ -14,9 +15,9 @@ export class Contact {
     email: string,
     phone: string,
     status: ContactStatus = ContactStatus.LEAD,
-    id?: string
+    id?: Identifier
   ) {
-    this.id = id || crypto.randomUUID();
+    this.id = id || Identifier.create();
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
@@ -24,7 +25,7 @@ export class Contact {
     this.status = status;
   }
 
-  getId(): string {
+  getId(): Identifier {
     return this.id;
   }
 

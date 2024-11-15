@@ -1,6 +1,8 @@
+import { Identifier } from "../value-objects/Identifier";
+
 export class NotificationEvent {
   constructor(
-    public readonly identifier: string,
+    public readonly identifier: Identifier,
     public readonly recipientType: "User" | "Contact",
     public readonly email: string,
     public readonly phone: string,

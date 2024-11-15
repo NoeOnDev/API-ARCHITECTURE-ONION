@@ -6,7 +6,7 @@ export async function rabbitmqEventPublisher(
 ): Promise<void> {
   const channel = await createRabbitMQChannel();
   const eventPayload = {
-    identifier: event.identifier,
+    identifier: event.identifier.getValue(),
     recipientType: event.recipientType,
     email: event.email,
     phone: event.phone,

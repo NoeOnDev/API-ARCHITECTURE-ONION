@@ -36,6 +36,6 @@ export class RequestPasswordChange {
 
     await this.eventPublisher(event);
 
-    return user.getId();
+    return user.getId().getValue();
   }
 }

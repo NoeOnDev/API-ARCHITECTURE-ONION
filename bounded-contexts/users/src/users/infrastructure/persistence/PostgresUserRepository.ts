@@ -1,7 +1,8 @@
 import { Pool } from "pg";
-import { User } from "../domain/User";
-import { UserRepository } from "../domain/UserRepository";
-import { Contact } from "../../contacts/domain/Contact";
+import { User } from "../../domain/User";
+import { UserRepository } from "../../domain/UserRepository";
+import { Contact } from "../../../contacts/domain/Contact";
+import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 
 export class PostgresUserRepository implements UserRepository {
   constructor(private pool: Pool) {}
@@ -13,9 +14,15 @@ export class PostgresUserRepository implements UserRepository {
       row.email,
       row.phone,
       row.status,
-      row.contact_id
+      Identifier.fromString(row.contact_id)
     );
-    return new User(row.username, row.password, contact, row.id, row.verified);
+    return new User(
+      row.username,
+      row.password,
+      contact,
+      Identifier.fromString(row.id),
+      row.verified
+    );
   }
 
   async save(user: User): Promise<void> {
@@ -29,10 +36,10 @@ export class PostgresUserRepository implements UserRepository {
           verified = EXCLUDED.verified;
     `;
     const values = [
-      user.getId(),
+      user.getId().getValue(),
       user.getUsername(),
       user.getPassword(),
-      user.getContact().getId(),
+      user.getContact().getId().getValue(),
       user.getVerificationDate(),
     ];
     await this.pool.query(query, values);
@@ -48,18 +55,23 @@ export class PostgresUserRepository implements UserRepository {
     return result.rows.map((row) => this.mapRowToUser(row));
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById(id: Identifier): Promise<User | null> {
     const query = `
       SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
       WHERE u.id = $1
     `;
-    const result = await this.pool.query(query, [id]);
+    const result = await this.pool.query(query, [id.getValue()]);
     if (result.rows.length === 0) {
       return null;
     }
     return this.mapRowToUser(result.rows[0]);
+  }
+
+  async deleteById(id: Identifier): Promise<void> {
+    const query = `DELETE FROM users WHERE id = $1`;
+    await this.pool.query(query, [id.getValue()]);
   }
 
   async findByUsername(username: string): Promise<User | null> {
@@ -88,28 +100,5 @@ export class PostgresUserRepository implements UserRepository {
       return null;
     }
     return this.mapRowToUser(result.rows[0]);
-  }
-
-  async deleteById(id: string): Promise<void> {
-    const query = `DELETE FROM users WHERE id = $1`;
-    await this.pool.query(query, [id]);
-  }
-
-  async existsByUsername(username: string): Promise<boolean> {
-    const query = `SELECT 1 FROM users WHERE username = $1 LIMIT 1`;
-    const result = await this.pool.query(query, [username]);
-    return result.rowCount !== null && result.rowCount > 0;
-  }
-
-  async existsByEmail(email: string): Promise<boolean> {
-    const query = `
-      SELECT 1
-      FROM users u
-      JOIN contacts c ON u.contact_id = c.id
-      WHERE c.email = $1
-      LIMIT 1
-    `;
-    const result = await this.pool.query(query, [email]);
-    return result.rowCount !== null && result.rowCount > 0;
   }
 }

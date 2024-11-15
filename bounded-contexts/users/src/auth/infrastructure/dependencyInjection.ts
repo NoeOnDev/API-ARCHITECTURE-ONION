@@ -15,7 +15,7 @@ import { UpdatePasswordController } from "./http/controllers/UpdatePasswordContr
 import { ResendNotificationController } from "./http/controllers/ResendNotificationController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
-import { InMemoryNotificationMessageProvider } from "./InMemoryNotificationMessageProvider";
+import { InMemoryNotificationMessageProvider } from "./persistence/InMemoryNotificationMessageProvider";
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();

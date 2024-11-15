@@ -1,7 +1,8 @@
 import { Contact } from "../../contacts/domain/Contact";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class User {
-  private id: string;
+  private id: Identifier;
   private username: string;
   private password: string;
   private contact: Contact;
@@ -11,17 +12,17 @@ export class User {
     username: string,
     password: string,
     contact: Contact,
-    id?: string,
+    id?: Identifier,
     verified: Date | null = null
   ) {
-    this.id = id || crypto.randomUUID();
+    this.id = id || Identifier.create();
     this.username = username;
     this.password = password;
     this.contact = contact;
     this.verified = verified;
   }
 
-  getId(): string {
+  getId(): Identifier {
     return this.id;
   }
 

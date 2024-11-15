@@ -1,7 +1,8 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
-import { NotificationType } from "../domain/NotificationType";
-import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { NotificationType } from "../../_shared/domain/NotificationType";
+import { NotificationMessageProvider } from "../../_shared/domain/NotificationMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class ResendNotification {
@@ -15,7 +16,8 @@ export class ResendNotification {
     userId: string,
     notificationType: NotificationType
   ): Promise<void> {
-    const user = await this.userRepository.findById(userId);
+    const identifier = Identifier.fromString(userId);
+    const user = await this.userRepository.findById(identifier);
     if (!user) {
       throw new UserNotFoundError();
     }

@@ -1,6 +1,7 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class VerifyUser {
@@ -11,7 +12,8 @@ export class VerifyUser {
   ) {}
 
   async execute(userId: string): Promise<void> {
-    const user = await this.userRepository.findById(userId);
+    const identifier = Identifier.fromString(userId);
+    const user = await this.userRepository.findById(identifier);
     if (!user) {
       throw new UserNotFoundError();
     }

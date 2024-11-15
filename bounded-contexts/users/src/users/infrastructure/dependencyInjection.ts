@@ -12,7 +12,7 @@ import { FindUserByUsernameController } from "./http/controllers/FindUserByUsern
 import { FindUserByEmailController } from "./http/controllers/FindUserByEmailController";
 import { DeleteUserByIdController } from "./http/controllers/DeleteUserByIdController";
 
-import { PostgresUserRepository } from "./PostgresUserRepository";
+import { PostgresUserRepository } from "./persistence/PostgresUserRepository";
 
 const userRepository = new PostgresUserRepository(pool);
 

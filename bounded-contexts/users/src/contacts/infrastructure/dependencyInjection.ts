@@ -12,7 +12,7 @@ import { FindContactByIdController } from "./http/controllers/findContactByIdCon
 import { FindContactByEmailController } from "./http/controllers/findContactByEmailController";
 import { DeleteContactByIdController } from "./http/controllers/deleteContactByIdController";
 
-import { PostgresContactRepository } from "./PostgresContactRepository";
+import { PostgresContactRepository } from "./persistence/PostgresContactRepository";
 
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
