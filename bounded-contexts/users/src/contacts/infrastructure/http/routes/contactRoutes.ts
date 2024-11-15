@@ -6,11 +6,14 @@ import {
   findContactByEmailController,
   deleteContactByIdController,
 } from "../../dependencyInjection";
+import { validateRequest } from "../../../../_helpers/validationMiddleware";
+import { saveContactSchema } from "../../validationSchemas";
 
 const contactRoutes = Router();
 
 contactRoutes.post(
   "/contacts",
+  validateRequest(saveContactSchema),
   saveContactController.handle.bind(saveContactController)
 );
 contactRoutes.get(

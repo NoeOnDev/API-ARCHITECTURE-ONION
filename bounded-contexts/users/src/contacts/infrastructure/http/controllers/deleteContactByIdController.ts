@@ -8,7 +8,7 @@ export class DeleteContactByIdController {
   async handle(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     try {
-      await this.deleteContactById.execute(id);
+      await this.deleteContactById.execute(id.trim());
       res.status(204).send();
     } catch (error) {
       if (error instanceof DomainError) {

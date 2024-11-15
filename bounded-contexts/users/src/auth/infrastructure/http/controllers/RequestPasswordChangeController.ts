@@ -8,7 +8,7 @@ export class RequestPasswordChangeController {
   async handle(req: Request, res: Response): Promise<void> {
     const { email } = req.body;
     try {
-      const userId = await this.requestPasswordChange.execute(email);
+      const userId = await this.requestPasswordChange.execute(email.trim());
       res.status(200).json({
         message: "Password change request has been processed successfully",
         userId: userId,

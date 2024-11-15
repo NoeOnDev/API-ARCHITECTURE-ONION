@@ -9,9 +9,9 @@ export class RegisterUserController {
     const { contactId, username, password } = req.body;
     try {
       const user = await this.registerUser.execute(
-        contactId,
-        username,
-        password
+        contactId.trim(),
+        username.trim(),
+        password.trim()
       );
       res.status(201).json({
         message: "User created successfully",

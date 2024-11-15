@@ -8,7 +8,7 @@ export class FindContactByIdController {
   async handle(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     try {
-      const contact = await this.findContactById.execute(id);
+      const contact = await this.findContactById.execute(id.trim());
       res.json(contact);
     } catch (error) {
       if (error instanceof DomainError) {

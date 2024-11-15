@@ -9,10 +9,10 @@ export class SaveContactController {
     const { firstName, lastName, email, phone } = req.body;
     try {
       const contact = await this.saveContact.execute(
-        firstName,
-        lastName,
-        email,
-        phone
+        firstName.trim(),
+        lastName.trim(),
+        email.trim(),
+        phone.trim()
       );
       res.status(201).json(contact);
     } catch (error) {

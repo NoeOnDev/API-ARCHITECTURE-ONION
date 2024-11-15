@@ -8,7 +8,7 @@ export class FindUserByIdController {
   async handle(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     try {
-      const user = await this.findUserById.execute(id);
+      const user = await this.findUserById.execute(id.trim());
       res.json(user);
     } catch (error) {
       if (error instanceof DomainError) {

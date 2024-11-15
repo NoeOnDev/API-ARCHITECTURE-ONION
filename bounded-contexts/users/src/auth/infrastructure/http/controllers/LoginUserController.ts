@@ -8,7 +8,10 @@ export class LoginUserController {
   async handle(req: Request, res: Response): Promise<void> {
     const { identifier, password } = req.body;
     try {
-      const user = await this.loginUser.execute(identifier, password);
+      const user = await this.loginUser.execute(
+        identifier.trim(),
+        password.trim()
+      );
       res.status(200).json(user);
     } catch (error) {
       if (error instanceof DomainError) {

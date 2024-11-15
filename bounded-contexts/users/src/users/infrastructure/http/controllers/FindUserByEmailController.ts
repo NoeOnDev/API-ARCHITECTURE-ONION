@@ -8,7 +8,7 @@ export class FindUserByEmailController {
   async handle(req: Request, res: Response): Promise<void> {
     const { email } = req.params;
     try {
-      const user = await this.findUserByEmail.execute(email);
+      const user = await this.findUserByEmail.execute(email.trim());
       res.json(user);
     } catch (error) {
       if (error instanceof DomainError) {

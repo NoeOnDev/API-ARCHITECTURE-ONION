@@ -8,7 +8,7 @@ export class UpdatePasswordController {
   async handle(req: Request, res: Response): Promise<void> {
     const { userId, newPassword } = req.body;
     try {
-      await this.updatePassword.execute(userId, newPassword);
+      await this.updatePassword.execute(userId.trim(), newPassword.trim());
       res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {
       if (error instanceof DomainError) {

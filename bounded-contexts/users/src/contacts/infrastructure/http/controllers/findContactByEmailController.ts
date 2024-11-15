@@ -8,7 +8,7 @@ export class FindContactByEmailController {
   async handle(req: Request, res: Response): Promise<void> {
     const { email } = req.params;
     try {
-      const contact = await this.findContactByEmail.execute(email);
+      const contact = await this.findContactByEmail.execute(email.trim());
       res.json(contact);
     } catch (error) {
       if (error instanceof DomainError) {
