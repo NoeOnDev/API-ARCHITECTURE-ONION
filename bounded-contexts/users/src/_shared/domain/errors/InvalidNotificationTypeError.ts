@@ -1,4 +1,4 @@
-import { NotificationType } from "../NotificationType";
+import { NotificationType } from "../../../auth/domain/NotificationType";
 import { DomainError } from "./DomainError";
 
 export class InvalidNotificationTypeError extends DomainError {

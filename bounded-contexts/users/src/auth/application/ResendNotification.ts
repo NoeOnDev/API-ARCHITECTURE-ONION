@@ -1,8 +1,8 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
-import { NotificationType } from "../../_shared/domain/NotificationType";
-import { NotificationMessageProvider } from "../../_shared/domain/NotificationMessageProvider";
+import { NotificationType } from "../domain/NotificationType";
+import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class ResendNotification {

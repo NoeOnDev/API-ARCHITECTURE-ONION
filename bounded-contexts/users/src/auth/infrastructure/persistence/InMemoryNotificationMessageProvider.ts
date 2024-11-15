@@ -1,5 +1,5 @@
-import { NotificationMessageProvider } from "../../../_shared/domain/NotificationMessageProvider";
-import { NotificationType } from "../../../_shared/domain/NotificationType";
+import { NotificationMessageProvider } from "../../domain/NotificationMessageProvider";
+import { NotificationType } from "../../domain/NotificationType";
 import { InvalidNotificationTypeError } from "../../../_shared/domain/errors/InvalidNotificationTypeError";
 
 export class InMemoryNotificationMessageProvider

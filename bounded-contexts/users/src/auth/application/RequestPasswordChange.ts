@@ -1,11 +1,14 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { NotificationType } from "../domain/NotificationType";
+import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
 
 export class RequestPasswordChange {
   constructor(
     private userRepository: UserRepository,
+    private messageProvider: NotificationMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -19,10 +22,9 @@ export class RequestPasswordChange {
       throw new AccountNotVerifiedError();
     }
 
-    const message =
-      "We have received your password change request. " +
-      "You will receive a verification code shortly to proceed with the password change process. " +
-      "Please follow the instructions to securely update your password.";
+    const message = this.messageProvider.getMessage(
+      NotificationType.USER_PASSWORD_CHANGE
+    );
 
     const event = new NotificationEvent(
       user.getId(),

@@ -1,18 +1,21 @@
 import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
+import { NotificationType } from "../domain/NotificationType";
+import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
 import { ContactNotFoundError } from "../../_shared/domain/errors/ContactNotFoundError";
 import { ContactAlreadyRegisteredError } from "../../_shared/domain/errors/ContactAlreadyRegisteredError";
 import { UsernameAlreadyExistsError } from "../../_shared/domain/errors/UsernameAlreadyExistsError";
-import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class RegisterUser {
   constructor(
     private userRepository: UserRepository,
     private contactRepository: ContactRepository,
     private hashService: HashService,
+    private messageProvider: NotificationMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -41,8 +44,9 @@ export class RegisterUser {
     const user = new User(username, hashedPassword, contact);
     await this.userRepository.save(user);
 
-    const message =
-      "Welcome! Here is your verification code to activate your account.";
+    const message = this.messageProvider.getMessage(
+      NotificationType.USER_VERIFICATION
+    );
 
     const event = new NotificationEvent(
       user.getId(),
