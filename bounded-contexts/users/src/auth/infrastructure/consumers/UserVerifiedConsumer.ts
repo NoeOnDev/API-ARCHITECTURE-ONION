@@ -8,10 +8,10 @@ export class UserVerifiedConsumer {
   ) {}
 
   async consume(): Promise<void> {
-    await this.channel.assertQueue("user_verified", { durable: true });
+    await this.channel.assertQueue("user_service", { durable: true });
 
     this.channel.consume(
-      "user_verified",
+      "user_service",
       async (msg: ConsumeMessage | null) => {
         if (msg) {
           try {

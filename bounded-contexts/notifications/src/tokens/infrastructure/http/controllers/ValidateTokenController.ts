@@ -6,14 +6,6 @@ export class ValidateTokenController {
 
   async handle(req: Request, res: Response): Promise<void> {
     const { userId, code, eventType } = req.body;
-
-    if (!userId || !code || !eventType) {
-      res
-        .status(400)
-        .send({ error: "userId, code, and eventType are required" });
-      return;
-    }
-
     try {
       const result = await this.validateToken.execute(userId, code, eventType);
       if (result.isValid) {

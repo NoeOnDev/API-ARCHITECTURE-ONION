@@ -9,9 +9,9 @@ export async function rabbitmqEventPublisher(
     userId: event.userId,
   };
 
-  await channel.assertQueue("user_verified", { durable: true });
+  await channel.assertQueue("user_service", { durable: true });
   channel.sendToQueue(
-    "user_verified",
+    "user_service",
     Buffer.from(JSON.stringify(eventPayload)),
     {
       persistent: true,
