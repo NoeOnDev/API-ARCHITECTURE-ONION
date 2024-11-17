@@ -1,5 +1,6 @@
 import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EmailAlreadyInUseError } from "../../_shared/domain/errors/EmailAlreadyInUseError";
 
@@ -15,8 +16,7 @@ export class SaveContact {
     email: string,
     phone: string
   ): Promise<Contact> {
-    const existingUserContact =
-      await this.contactRepository.findByEmail(email);
+    const existingUserContact = await this.contactRepository.findByEmail(email);
 
     if (existingUserContact?.getStatus().getValue() === "USER") {
       throw new EmailAlreadyInUseError();
@@ -28,6 +28,8 @@ export class SaveContact {
     const message =
       "Welcome! Complete your registration to enjoy our services.";
 
+    const eventType = EventType.USER_VERIFICATION;
+
     const event = new NotificationEvent(
       contact.getId(),
       "Contact",
@@ -35,7 +37,8 @@ export class SaveContact {
       phone,
       message,
       "EMAIL",
-      "NORMAL"
+      "NORMAL",
+      eventType
     );
 
     await this.eventPublisher(event);

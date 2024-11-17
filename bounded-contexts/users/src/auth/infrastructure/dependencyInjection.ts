@@ -15,11 +15,11 @@ import { UpdatePasswordController } from "./http/controllers/UpdatePasswordContr
 import { ResendNotificationController } from "./http/controllers/ResendNotificationController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
-import { InMemoryNotificationMessageProvider } from "./persistence/InMemoryNotificationMessageProvider";
+import { MemoryEventMessageProvider } from "./persistence/MemoryEventMessageProvider";
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();
-const messageProvider = new InMemoryNotificationMessageProvider();
+const messageProvider = new MemoryEventMessageProvider();
 
 const registerUser = new RegisterUser(
   userRepository,

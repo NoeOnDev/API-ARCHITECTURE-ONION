@@ -4,8 +4,8 @@ import { User } from "../../users/domain/User";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
-import { NotificationType } from "../domain/NotificationType";
-import { NotificationMessageProvider } from "../domain/NotificationMessageProvider";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { ContactNotFoundError } from "../../_shared/domain/errors/ContactNotFoundError";
 import { ContactAlreadyRegisteredError } from "../../_shared/domain/errors/ContactAlreadyRegisteredError";
 import { UsernameAlreadyExistsError } from "../../_shared/domain/errors/UsernameAlreadyExistsError";
@@ -15,7 +15,7 @@ export class RegisterUser {
     private userRepository: UserRepository,
     private contactRepository: ContactRepository,
     private hashService: HashService,
-    private messageProvider: NotificationMessageProvider,
+    private messageProvider: EventMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -44,9 +44,8 @@ export class RegisterUser {
     const user = new User(username, hashedPassword, contact);
     await this.userRepository.save(user);
 
-    const message = this.messageProvider.getMessage(
-      NotificationType.USER_VERIFICATION
-    );
+    const eventType = EventType.USER_VERIFICATION;
+    const message = this.messageProvider.getMessage(eventType);
 
     const event = new NotificationEvent(
       user.getId(),
@@ -55,7 +54,8 @@ export class RegisterUser {
       user.getPhone(),
       message,
       "WHATSAPP",
-      "2FA"
+      "2FA",
+      eventType
     );
 
     await this.eventPublisher(event);

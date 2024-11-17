@@ -18,7 +18,7 @@ export class TwilioNotificationService implements NotificationService {
             to: `whatsapp:${recipient}`,
           });
         },
-        3,
+        10,
         1000
       );
     } else {

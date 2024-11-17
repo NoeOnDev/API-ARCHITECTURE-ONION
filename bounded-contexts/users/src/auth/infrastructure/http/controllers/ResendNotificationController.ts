@@ -6,12 +6,9 @@ export class ResendNotificationController {
   constructor(private resendNotification: ResendNotification) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { userId, notificationType } = req.body;
+    const { userId, eventType } = req.body;
     try {
-      await this.resendNotification.execute(
-        userId.trim(),
-        notificationType.trim()
-      );
+      await this.resendNotification.execute(userId.trim(), eventType.trim());
       res.status(200).json({ message: "Notification resent successfully" });
     } catch (error) {
       if (error instanceof DomainError) {

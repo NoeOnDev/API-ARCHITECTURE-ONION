@@ -6,6 +6,7 @@ import { TokenNotFoundError } from "../../_shared/domain/errors/TokenNotFoundErr
 import { InvalidTokenUserError } from "../../_shared/domain/errors/InvalidTokenUserError";
 import { TokenExpiredError } from "../../_shared/domain/errors/TokenExpiredError";
 import { TokenAlreadyUsedError } from "../../_shared/domain/errors/TokenAlreadyUsedError";
+import { InvalidEventTypeError } from "../../_shared/domain/errors/InvalidEventTypeError";
 
 export class ValidateToken {
   constructor(
@@ -38,6 +39,11 @@ export class ValidateToken {
     }
 
     const type = EventType.fromString(eventType);
+
+    if (!token.getEventType().equals(type)) {
+      throw new InvalidEventTypeError(eventType);
+    }
+
     token.markAsUsed();
     await this.tokenRepository.save(token);
 

@@ -2,6 +2,7 @@ import { UserRepository } from "../../users/domain/UserRepository";
 import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
 
@@ -27,6 +28,7 @@ export class UpdatePassword {
     user.updatePassword(hashedPassword);
     await this.userRepository.save(user);
 
+    const eventType = EventType.USER_PASSWORD_CHANGE;
     const message =
       "Your password has been successfully updated. " +
       "This change was made from your account at " +
@@ -41,7 +43,8 @@ export class UpdatePassword {
       user.getPhone(),
       message,
       "EMAIL",
-      "NORMAL"
+      "NORMAL",
+      eventType
     );
 
     await this.eventPublisher(event);

@@ -2,6 +2,7 @@ import { Channel, ConsumeMessage } from "amqplib";
 import { GenerateTokenForUser } from "../../../tokens/application/GenerateTokenForUser";
 import { SendNotification } from "../../application/SendNotification";
 import { NotificationChannel } from "../../domain/value-objects/NotificationChannel";
+import { EventType } from "../../../_shared/domain/value-objects/EventType";
 
 export class ServiceNotificationConsumer {
   constructor(
@@ -26,13 +27,18 @@ export class ServiceNotificationConsumer {
               message,
               channel,
               type,
+              eventType,
             } = JSON.parse(msg.content.toString());
 
             let finalMessage = message;
             const notificationChannel = NotificationChannel.from(channel);
+            const eventTypeObj = EventType.fromString(eventType);
 
             if (type === "2FA") {
-              const token = await this.generateTokenForUser.execute(identifier);
+              const token = await this.generateTokenForUser.execute(
+                identifier,
+                eventTypeObj.getValue()
+              );
               finalMessage = `${message}. Your verification code is: ${token.getCode()}`;
             }
 

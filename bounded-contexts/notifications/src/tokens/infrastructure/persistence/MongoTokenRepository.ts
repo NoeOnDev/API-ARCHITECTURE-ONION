@@ -3,6 +3,7 @@ import { Token } from "../../domain/Token";
 import { TokenStatus } from "../../domain/value-objects/TokenStatus";
 import mongoose, { Document, Schema } from "mongoose";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
+import { EventType } from "../../../_shared/domain/value-objects/EventType";
 
 interface TokenDocument extends Document {
   id: string;
@@ -11,6 +12,7 @@ interface TokenDocument extends Document {
   createdAt: Date;
   expiresAt: Date;
   status: string;
+  eventType: string;
 }
 
 const tokenSchema = new Schema<TokenDocument>({
@@ -20,6 +22,7 @@ const tokenSchema = new Schema<TokenDocument>({
   createdAt: { type: Date, required: true },
   expiresAt: { type: Date, required: true },
   status: { type: String, required: true },
+  eventType: { type: String, required: true },
 });
 
 const TokenModel = mongoose.model<TokenDocument>("Token", tokenSchema);
@@ -34,6 +37,7 @@ export class MongoTokenRepository implements TokenRepository {
         createdAt: token.getCreatedAt(),
         expiresAt: token.getExpiresAt(),
         status: token.getStatus().getValue(),
+        eventType: token.getEventType().getValue(),
       },
       { upsert: true, new: true }
     ).exec();
@@ -64,10 +68,11 @@ export class MongoTokenRepository implements TokenRepository {
     return new Token(
       Identifier.fromString(tokenDocument.userId),
       tokenDocument.code,
-      tokenDocument.createdAt,
       tokenDocument.expiresAt,
       TokenStatus.from(tokenDocument.status),
-      Identifier.fromString(tokenDocument.id)
+      EventType.fromString(tokenDocument.eventType),
+      Identifier.fromString(tokenDocument.id),
+      tokenDocument.createdAt
     );
   }
 }

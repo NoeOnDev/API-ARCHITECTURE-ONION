@@ -2,6 +2,7 @@ import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class VerifyUser {
@@ -25,6 +26,7 @@ export class VerifyUser {
     await this.userRepository.save(user);
     await this.contactRepository.save(contact);
 
+    const eventType = EventType.USER_VERIFICATION;
     const message = "Welcome to our platform! Your registration is complete.";
     const welcomeEvent = new NotificationEvent(
       user.getId(),
@@ -33,7 +35,8 @@ export class VerifyUser {
       user.getPhone(),
       message,
       "EMAIL",
-      "NORMAL"
+      "NORMAL",
+      eventType
     );
 
     await this.eventPublisher(welcomeEvent);

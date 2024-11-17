@@ -1,5 +1,6 @@
 import { TokenStatus } from "./value-objects/TokenStatus";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
 
 export class Token {
   private id: Identifier;
@@ -8,14 +9,16 @@ export class Token {
   private createdAt: Date;
   private expiresAt: Date;
   private status: TokenStatus;
+  private eventType: EventType;
 
   constructor(
     userId: Identifier,
     code: string,
-    createdAt: Date,
     expiresAt: Date,
     status: TokenStatus,
-    id?: Identifier
+    eventType: EventType,
+    id?: Identifier,
+    createdAt?: Date
   ) {
     this.id = id || Identifier.create();
     this.userId = userId;
@@ -23,6 +26,7 @@ export class Token {
     this.createdAt = createdAt || new Date();
     this.expiresAt = expiresAt;
     this.status = status;
+    this.eventType = eventType;
   }
 
   markAsUsed(): void {
@@ -65,5 +69,9 @@ export class Token {
 
   getStatus(): TokenStatus {
     return this.status;
+  }
+
+  getEventType(): EventType {
+    return this.eventType;
   }
 }

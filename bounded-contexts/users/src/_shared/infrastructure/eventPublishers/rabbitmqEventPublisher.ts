@@ -13,6 +13,7 @@ export async function rabbitmqEventPublisher(
     message: event.message,
     channel: event.channel,
     type: event.type,
+    eventType: event.eventType.getValue(),
   };
 
   await channel.assertQueue("service_notification", { durable: true });
