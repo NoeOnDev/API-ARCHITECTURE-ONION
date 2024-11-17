@@ -3,6 +3,7 @@ import { NotificationService } from "../domain/services/NotificationService";
 import { NotificationChannel } from "../domain/value-objects/NotificationChannel";
 import { NotificationStatus } from "../domain/value-objects/NotificationStatus";
 import { Notification } from "../domain/Notification";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class SendNotification {
   constructor(
@@ -17,8 +18,9 @@ export class SendNotification {
     channel: NotificationChannel,
     recipient: string
   ): Promise<void> {
+    const identifier = Identifier.fromString(recipientId);
     const notification = new Notification(
-      recipientId,
+      identifier,
       recipientType,
       channel,
       message,

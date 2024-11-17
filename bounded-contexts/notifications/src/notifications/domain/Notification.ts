@@ -1,9 +1,10 @@
 import { NotificationChannel } from "./value-objects/NotificationChannel";
 import { NotificationStatus } from "./value-objects/NotificationStatus";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class Notification {
-  private id: string;
-  private recipientId: string;
+  private id: Identifier;
+  private recipientId: Identifier;
   private recipientType: "User" | "Contact";
   private channel: NotificationChannel;
   private message: string;
@@ -11,15 +12,15 @@ export class Notification {
   private createdAt: Date;
 
   constructor(
-    recipientId: string,
+    recipientId: Identifier,
     recipientType: "User" | "Contact",
     channel: NotificationChannel,
     message: string,
     status: NotificationStatus = NotificationStatus.PENDING,
-    id?: string,
+    id?: Identifier,
     createdAt?: Date
   ) {
-    this.id = id || crypto.randomUUID();
+    this.id = id || Identifier.create();
     this.recipientId = recipientId;
     this.recipientType = recipientType;
     this.channel = channel;
@@ -40,11 +41,11 @@ export class Notification {
     return this.status.isPending();
   }
 
-  getId(): string {
+  getId(): Identifier {
     return this.id;
   }
 
-  getRecipientId(): string {
+  getRecipientId(): Identifier {
     return this.recipientId;
   }
 

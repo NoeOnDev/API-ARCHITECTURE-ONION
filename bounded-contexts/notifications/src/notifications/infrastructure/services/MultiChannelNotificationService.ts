@@ -1,9 +1,9 @@
-import { NotificationService } from "../../domain/services/NotificationService";
 import { NotificationChannel } from "../../domain/value-objects/NotificationChannel";
 import { TwilioNotificationService } from "./TwilioNotificationService";
 import { EmailNotificationService } from "./EmailNotificationService";
+import { UnsupportedChannelError } from "../../../_shared/domain/errors/UnsupportedChannelError";
 
-export class MultiChannelNotificationService implements NotificationService {
+export class MultiChannelNotificationService {
   constructor(
     private readonly whatsappService: TwilioNotificationService,
     private readonly emailService: EmailNotificationService
@@ -19,7 +19,7 @@ export class MultiChannelNotificationService implements NotificationService {
     } else if (channel.isEmail()) {
       await this.emailService.send(channel, message, recipient);
     } else {
-      throw new Error("Channel not supported");
+      throw new UnsupportedChannelError(channel.getValue());
     }
   }
 }

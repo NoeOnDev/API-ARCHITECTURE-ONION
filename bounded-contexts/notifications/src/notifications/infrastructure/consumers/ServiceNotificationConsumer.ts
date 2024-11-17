@@ -3,6 +3,7 @@ import { GenerateTokenForUser } from "../../../tokens/application/GenerateTokenF
 import { SendNotification } from "../../application/SendNotification";
 import { NotificationChannel } from "../../domain/value-objects/NotificationChannel";
 import { EventType } from "../../../_shared/domain/value-objects/EventType";
+import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 
 export class ServiceNotificationConsumer {
   constructor(
@@ -20,7 +21,7 @@ export class ServiceNotificationConsumer {
         if (msg) {
           try {
             const {
-              identifier,
+              identifier: rawIdentifier,
               recipientType,
               email,
               phone,
@@ -30,21 +31,24 @@ export class ServiceNotificationConsumer {
               eventType,
             } = JSON.parse(msg.content.toString());
 
+            const identifier = Identifier.fromString(rawIdentifier);
+            const eventTypeObj = EventType.fromString(eventType);
+
             let finalMessage = message;
             const notificationChannel = NotificationChannel.from(channel);
-            const eventTypeObj = EventType.fromString(eventType);
 
             if (type === "2FA") {
               const token = await this.generateTokenForUser.execute(
-                identifier,
+                identifier.getValue(),
                 eventTypeObj.getValue()
               );
               finalMessage = `${message}. Your verification code is: ${token.getCode()}`;
             }
 
             const recipient = notificationChannel.isWhatsApp() ? phone : email;
+
             await this.sendNotification.execute(
-              identifier,
+              identifier.getValue(),
               recipientType,
               finalMessage,
               notificationChannel,
@@ -52,7 +56,7 @@ export class ServiceNotificationConsumer {
             );
 
             console.log(
-              `Processed notification: identifier=${identifier}, channel=${channel}`
+              `Processed notification: identifier=${identifier.getValue()}, channel=${channel}`
             );
             this.channel.ack(msg);
           } catch (error) {

@@ -1,7 +1,8 @@
-import { NotificationRepository } from "../domain/NotificationRepository";
-import { Notification } from "../domain/Notification";
-import { NotificationChannel } from "../domain/value-objects/NotificationChannel";
-import { NotificationStatus } from "../domain/value-objects/NotificationStatus";
+import { NotificationRepository } from "../../domain/NotificationRepository";
+import { Notification } from "../../domain/Notification";
+import { NotificationChannel } from "../../domain/value-objects/NotificationChannel";
+import { NotificationStatus } from "../../domain/value-objects/NotificationStatus";
+import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 import mongoose, { Document, Schema } from "mongoose";
 
 interface NotificationDocument extends Document {
@@ -32,9 +33,9 @@ const NotificationModel = mongoose.model<NotificationDocument>(
 export class MongoNotificationRepository implements NotificationRepository {
   async save(notification: Notification): Promise<void> {
     await NotificationModel.findOneAndUpdate(
-      { id: notification.getId() },
+      { id: notification.getId().getValue() },
       {
-        recipientId: notification.getRecipientId(),
+        recipientId: notification.getRecipientId().getValue(),
         recipientType: notification.getRecipientType(),
         channel: notification.getChannel().getValue(),
         message: notification.getMessage(),
@@ -45,15 +46,17 @@ export class MongoNotificationRepository implements NotificationRepository {
     ).exec();
   }
 
-  async findByRecipientId(recipientId: string): Promise<Notification[]> {
+  async findByRecipientId(recipientId: Identifier): Promise<Notification[]> {
     const notificationDocuments = await NotificationModel.find({
-      recipientId,
+      recipientId: recipientId.getValue(),
     }).exec();
     return notificationDocuments.map(this.mapDocumentToNotification);
   }
 
-  async findById(id: string): Promise<Notification | null> {
-    const notificationDocument = await NotificationModel.findOne({ id }).exec();
+  async findById(id: Identifier): Promise<Notification | null> {
+    const notificationDocument = await NotificationModel.findOne({
+      id: id.getValue(),
+    }).exec();
     return notificationDocument
       ? this.mapDocumentToNotification(notificationDocument)
       : null;
@@ -63,12 +66,12 @@ export class MongoNotificationRepository implements NotificationRepository {
     notificationDocument: NotificationDocument
   ): Notification {
     return new Notification(
-      notificationDocument.recipientId,
+      Identifier.fromString(notificationDocument.recipientId),
       notificationDocument.recipientType as "User" | "Contact",
       NotificationChannel.from(notificationDocument.channel),
       notificationDocument.message,
       NotificationStatus.from(notificationDocument.status),
-      notificationDocument.id,
+      Identifier.fromString(notificationDocument.id),
       notificationDocument.createdAt
     );
   }

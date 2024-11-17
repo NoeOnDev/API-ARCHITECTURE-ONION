@@ -1,6 +1,6 @@
 import { SendNotification } from "../application/SendNotification";
 
-import { MongoNotificationRepository } from "./MongoNotificationRepository";
+import { MongoNotificationRepository } from "./persistence/MongoNotificationRepository";
 
 import { MultiChannelNotificationService } from "./services/MultiChannelNotificationService";
 import { TwilioNotificationService } from "./services/TwilioNotificationService";
