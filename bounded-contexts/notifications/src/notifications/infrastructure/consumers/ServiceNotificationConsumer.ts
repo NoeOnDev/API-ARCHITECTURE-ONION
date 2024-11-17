@@ -4,6 +4,8 @@ import { SendNotification } from "../../application/SendNotification";
 import { NotificationChannel } from "../../domain/value-objects/NotificationChannel";
 import { EventType } from "../../../_shared/domain/value-objects/EventType";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
+import { TwilioNotificationError } from "../../../_shared/domain/errors/TwilioNotificationError";
+import { EmailNotificationError } from "../../../_shared/domain/errors/EmailNotificationError";
 
 export class ServiceNotificationConsumer {
   constructor(
@@ -61,7 +63,15 @@ export class ServiceNotificationConsumer {
             this.channel.ack(msg);
           } catch (error) {
             console.error("Error processing notification:", error);
-            this.channel.nack(msg, false, true);
+
+            if (
+              error instanceof TwilioNotificationError ||
+              error instanceof EmailNotificationError
+            ) {
+              this.channel.nack(msg, false, true);
+            } else {
+              this.channel.nack(msg, false, false);
+            }
           }
         }
       },
