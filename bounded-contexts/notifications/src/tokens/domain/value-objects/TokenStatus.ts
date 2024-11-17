@@ -1,3 +1,5 @@
+import { InvalidTokenStatusError } from "../../../_shared/domain/errors/InvalidTokenStatusError";
+
 export class TokenStatus {
   private readonly value: "PENDING" | "USED" | "EXPIRED";
 
@@ -18,9 +20,10 @@ export class TokenStatus {
       case "EXPIRED":
         return TokenStatus.EXPIRED;
       default:
-        throw new Error(`Invalid token status: ${value}`);
+        throw new InvalidTokenStatusError(value);
     }
   }
+
   isPending(): boolean {
     return this.value === "PENDING";
   }

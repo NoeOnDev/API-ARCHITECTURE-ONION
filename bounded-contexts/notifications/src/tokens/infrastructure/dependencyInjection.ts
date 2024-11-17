@@ -1,4 +1,4 @@
-import { MongoTokenRepository } from "./MongoTokenRepository";
+import { MongoTokenRepository } from "./persistence/MongoTokenRepository";
 
 import { GenerateTokenForUser } from "../application/GenerateTokenForUser";
 import { ValidateToken } from "../application/ValidateToken";

@@ -1,7 +1,8 @@
-import { TokenRepository } from "../domain/TokenRepository";
-import { Token } from "../domain/Token";
-import { TokenStatus } from "../domain/value-objects/TokenStatus";
+import { TokenRepository } from "../../domain/TokenRepository";
+import { Token } from "../../domain/Token";
+import { TokenStatus } from "../../domain/value-objects/TokenStatus";
 import mongoose, { Document, Schema } from "mongoose";
+import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 
 interface TokenDocument extends Document {
   id: string;
@@ -26,9 +27,9 @@ const TokenModel = mongoose.model<TokenDocument>("Token", tokenSchema);
 export class MongoTokenRepository implements TokenRepository {
   async save(token: Token): Promise<void> {
     await TokenModel.findOneAndUpdate(
-      { id: token.getId() },
+      { id: token.getId().getValue() },
       {
-        userId: token.getUserId(),
+        userId: token.getUserId().getValue(),
         code: token.getCode(),
         createdAt: token.getCreatedAt(),
         expiresAt: token.getExpiresAt(),
@@ -38,8 +39,10 @@ export class MongoTokenRepository implements TokenRepository {
     ).exec();
   }
 
-  async findByUserId(userId: string): Promise<Token | null> {
-    const tokenDocument = await TokenModel.findOne({ userId })
+  async findByUserId(userId: Identifier): Promise<Token | null> {
+    const tokenDocument = await TokenModel.findOne({
+      userId: userId.getValue(),
+    })
       .sort({ createdAt: -1 })
       .exec();
     return tokenDocument ? this.mapDocumentToToken(tokenDocument) : null;
@@ -50,21 +53,21 @@ export class MongoTokenRepository implements TokenRepository {
     return tokenDocument ? this.mapDocumentToToken(tokenDocument) : null;
   }
 
-  async updateStatus(tokenId: string, status: TokenStatus): Promise<void> {
+  async updateStatus(tokenId: Identifier, status: TokenStatus): Promise<void> {
     await TokenModel.updateOne(
-      { id: tokenId },
+      { id: tokenId.getValue() },
       { status: status.getValue() }
     ).exec();
   }
 
   private mapDocumentToToken(tokenDocument: TokenDocument): Token {
     return new Token(
-      tokenDocument.userId,
+      Identifier.fromString(tokenDocument.userId),
       tokenDocument.code,
       tokenDocument.createdAt,
       tokenDocument.expiresAt,
       TokenStatus.from(tokenDocument.status),
-      tokenDocument.id
+      Identifier.fromString(tokenDocument.id)
     );
   }
 }

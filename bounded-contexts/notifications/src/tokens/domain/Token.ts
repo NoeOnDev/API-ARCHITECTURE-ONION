@@ -1,22 +1,23 @@
 import { TokenStatus } from "./value-objects/TokenStatus";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class Token {
-  private id: string;
-  private userId: string;
+  private id: Identifier;
+  private userId: Identifier;
   private code: string;
   private createdAt: Date;
   private expiresAt: Date;
   private status: TokenStatus;
 
   constructor(
-    userId: string,
+    userId: Identifier,
     code: string,
     createdAt: Date,
     expiresAt: Date,
     status: TokenStatus,
-    id?: string
+    id?: Identifier
   ) {
-    this.id = id || crypto.randomUUID();
+    this.id = id || Identifier.create();
     this.userId = userId;
     this.code = code;
     this.createdAt = createdAt || new Date();
@@ -42,11 +43,11 @@ export class Token {
     return this.status.isPending();
   }
 
-  getId(): string {
+  getId(): Identifier {
     return this.id;
   }
 
-  getUserId(): string {
+  getUserId(): Identifier {
     return this.userId;
   }
 

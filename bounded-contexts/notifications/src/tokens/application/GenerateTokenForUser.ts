@@ -1,12 +1,14 @@
 import { TokenRepository } from "../domain/TokenRepository";
 import { Token } from "../domain/Token";
 import { TokenStatus } from "../domain/value-objects/TokenStatus";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class GenerateTokenForUser {
   constructor(private tokenRepository: TokenRepository) {}
 
   async execute(userId: string): Promise<Token> {
-    const activeToken = await this.tokenRepository.findByUserId(userId);
+    const identifier = Identifier.fromString(userId);
+    const activeToken = await this.tokenRepository.findByUserId(identifier);
     if (activeToken && activeToken.isPending()) {
       activeToken.expire();
       await this.tokenRepository.save(activeToken);
@@ -15,7 +17,7 @@ export class GenerateTokenForUser {
     const code = this.generateCode();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
     const newToken = new Token(
-      userId,
+      identifier,
       code,
       new Date(),
       expiresAt,

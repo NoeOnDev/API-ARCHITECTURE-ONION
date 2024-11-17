@@ -6,7 +6,7 @@ export async function rabbitmqEventPublisher(
 ): Promise<void> {
   const channel = await createRabbitMQChannel();
   const eventPayload = {
-    userId: event.userId,
+    userId: event.userId.getValue(),
   };
 
   await channel.assertQueue("user_service", { durable: true });

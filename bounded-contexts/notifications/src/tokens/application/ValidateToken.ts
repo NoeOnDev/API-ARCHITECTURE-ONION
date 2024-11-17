@@ -1,5 +1,11 @@
 import { TokenRepository } from "../domain/TokenRepository";
 import { UserVerifiedEvent } from "../domain/events/UserVerifiedEvent";
+import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { TokenNotFoundError } from "../../_shared/domain/errors/TokenNotFoundError";
+import { InvalidTokenUserError } from "../../_shared/domain/errors/InvalidTokenUserError";
+import { TokenExpiredError } from "../../_shared/domain/errors/TokenExpiredError";
+import { TokenAlreadyUsedError } from "../../_shared/domain/errors/TokenAlreadyUsedError";
 
 export class ValidateToken {
   constructor(
@@ -12,25 +18,34 @@ export class ValidateToken {
     code: string,
     eventType: string
   ): Promise<{ isValid: boolean; userId?: string }> {
+    const identifier = Identifier.fromString(userId);
     const token = await this.tokenRepository.findByCode(code);
 
-    if (
-      token &&
-      token.getUserId() === userId &&
-      token.isPending() &&
-      !token.isExpired()
-    ) {
-      token.markAsUsed();
-      await this.tokenRepository.save(token);
-
-      if (eventType === "user_verification") {
-        const event = new UserVerifiedEvent(userId);
-        await this.eventPublisher(event);
-      }
-
-      return { isValid: true, userId: token.getUserId() };
+    if (!token) {
+      throw new TokenNotFoundError();
     }
 
-    return { isValid: false };
+    if (token.isExpired()) {
+      throw new TokenExpiredError();
+    }
+
+    if (!token.isPending()) {
+      throw new TokenAlreadyUsedError();
+    }
+
+    if (!token.getUserId().equals(identifier)) {
+      throw new InvalidTokenUserError();
+    }
+
+    const type = EventType.fromString(eventType);
+    token.markAsUsed();
+    await this.tokenRepository.save(token);
+
+    if (type.equals(EventType.USER_VERIFICATION)) {
+      const event = new UserVerifiedEvent(identifier);
+      await this.eventPublisher(event);
+    }
+
+    return { isValid: true, userId: token.getUserId().getValue() };
   }
 }
