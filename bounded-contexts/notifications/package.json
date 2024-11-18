@@ -26,6 +26,7 @@
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.13",
     "@types/joi": "^17.2.2",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.7.4",
     "@types/nodemailer": "^6.4.16",
     "@types/supertest": "^6.0.2",
@@ -43,6 +44,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
     "nodemailer": "^6.9.15",
     "twilio": "^5.3.3"

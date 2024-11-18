@@ -14,6 +14,8 @@ const envSchema = Joi.object({
   TWILIO_PHONE_NUMBER: Joi.string().required(),
   MONGO_URI: Joi.string().required(),
   RABBIT_URL: Joi.string().required(),
+  JWT_SECRET: Joi.string().required(),
+  JWT_EXPIRATION: Joi.string().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -33,6 +35,8 @@ const {
   TWILIO_PHONE_NUMBER,
   MONGO_URI,
   RABBIT_URL,
+  JWT_SECRET,
+  JWT_EXPIRATION,
 } = envVars;
 
 interface Env {
@@ -56,6 +60,10 @@ interface Env {
   rabbitmq: {
     RABBIT_URL: string;
   };
+  jwt: {
+    JWT_SECRET: string;
+    JWT_EXPIRATION: string;
+  };
 }
 
 export const env: Env = {
@@ -78,5 +86,9 @@ export const env: Env = {
   },
   rabbitmq: {
     RABBIT_URL: RABBIT_URL,
+  },
+  jwt: {
+    JWT_SECRET: JWT_SECRET,
+    JWT_EXPIRATION: JWT_EXPIRATION,
   },
 };
