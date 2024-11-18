@@ -6,7 +6,7 @@ import {
   updatePasswordController,
   resendNotificationController,
 } from "../../dependencyInjection";
-import { validateRequest } from "../../../../_helpers/validationMiddleware";
+import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
 import {
   registerUserSchema,
   loginUserSchema,

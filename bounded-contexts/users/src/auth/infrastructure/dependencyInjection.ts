@@ -15,10 +15,12 @@ import { UpdatePasswordController } from "./http/controllers/UpdatePasswordContr
 import { ResendNotificationController } from "./http/controllers/ResendNotificationController";
 
 import { Argon2HashService } from "./services/Argon2HashService";
+import { JwtTokenService } from "./services/JwtTokenService";
 import { MemoryEventMessageProvider } from "./persistence/MemoryEventMessageProvider";
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 const hashService = new Argon2HashService();
+const tokenService = new JwtTokenService();
 const messageProvider = new MemoryEventMessageProvider();
 
 const registerUser = new RegisterUser(
@@ -33,7 +35,13 @@ const verifyUser = new VerifyUser(
   contactRepository,
   rabbitmqEventPublisher
 );
-const loginUser = new LoginUser(userRepository, hashService);
+const loginUser = new LoginUser(
+  userRepository,
+  hashService,
+  tokenService,
+  messageProvider,
+  rabbitmqEventPublisher
+);
 
 const requestPasswordChange = new RequestPasswordChange(
   userRepository,

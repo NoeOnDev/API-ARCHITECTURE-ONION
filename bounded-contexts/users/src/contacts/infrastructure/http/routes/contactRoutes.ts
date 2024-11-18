@@ -6,7 +6,7 @@ import {
   findContactByEmailController,
   deleteContactByIdController,
 } from "../../dependencyInjection";
-import { validateRequest } from "../../../../_helpers/validationMiddleware";
+import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
 import { saveContactSchema } from "../../validationSchemas";
 
 const contactRoutes = Router();
