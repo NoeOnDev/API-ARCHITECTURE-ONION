@@ -3,12 +3,14 @@ import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 
 export class VerifyUser {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly contactRepository: ContactRepository,
+    private readonly messageProvider: EventMessageProvider,
     private readonly eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -26,8 +28,9 @@ export class VerifyUser {
     await this.userRepository.save(user);
     await this.contactRepository.save(contact);
 
-    const eventType = EventType.USER_VERIFICATION;
-    const message = "Welcome to our platform! Your registration is complete.";
+    const eventType = EventType.USER_VERIFIED;
+    const message = this.messageProvider.getMessage(eventType);
+
     const welcomeEvent = new NotificationEvent(
       user.getId(),
       "User",

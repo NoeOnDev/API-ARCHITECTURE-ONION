@@ -3,6 +3,7 @@ import { HashService } from "../domain/services/HashService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
 
@@ -10,6 +11,7 @@ export class UpdatePassword {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly hashService: HashService,
+    private readonly messageProvider: EventMessageProvider,
     private readonly eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -28,13 +30,8 @@ export class UpdatePassword {
     user.updatePassword(hashedPassword);
     await this.userRepository.save(user);
 
-    const eventType = EventType.USER_PASSWORD_CHANGE;
-    const message =
-      "Your password has been successfully updated. " +
-      "This change was made from your account at " +
-      new Date().toLocaleString() +
-      ". " +
-      "If you did not make this change, please contact our support team immediately.";
+    const eventType = EventType.USER_PASSWORD_UPDATED;
+    const message = this.messageProvider.getMessage(eventType);
 
     const event = new NotificationEvent(
       user.getId(),

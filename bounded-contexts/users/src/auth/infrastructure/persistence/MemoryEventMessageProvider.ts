@@ -10,6 +10,12 @@ export class MemoryEventMessageProvider implements EventMessageProvider {
       "We have received your password change request. You will receive a verification code shortly to proceed with the password change process. Please follow the instructions to securely update your password.",
     [EventType.USER_AUTHENTICATION.getValue()]:
       "You have successfully logged in to your account.",
+    [EventType.USER_PASSWORD_UPDATED.getValue()]:
+      "Your password has been successfully updated. If you did not make this change, please contact our support team immediately.",
+    [EventType.USER_VERIFIED.getValue()]:
+      "Welcome to our platform! Your registration is complete.",
+    [EventType.CONTACT_SAVED.getValue()]:
+      "Welcome! Complete your registration to enjoy our services.",
   };
 
   getMessage(eventType: EventType): string {

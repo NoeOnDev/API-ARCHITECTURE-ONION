@@ -1,12 +1,14 @@
 import { Contact } from "../domain/Contact";
 import { ContactRepository } from "../domain/ContactRepository";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { EventMessageProvider } from "../../auth/domain/EventMessageProvider";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EmailAlreadyInUseError } from "../../_shared/domain/errors/EmailAlreadyInUseError";
 
 export class SaveContact {
   constructor(
     private contactRepository: ContactRepository,
+    private messageProvider: EventMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
@@ -25,10 +27,8 @@ export class SaveContact {
     const contact = new Contact(firstName, lastName, email, phone);
     await this.contactRepository.save(contact);
 
-    const message =
-      "Welcome! Complete your registration to enjoy our services.";
-
-    const eventType = EventType.USER_VERIFICATION;
+    const eventType = EventType.CONTACT_SAVED;
+    const message = this.messageProvider.getMessage(eventType);
 
     const event = new NotificationEvent(
       contact.getId(),

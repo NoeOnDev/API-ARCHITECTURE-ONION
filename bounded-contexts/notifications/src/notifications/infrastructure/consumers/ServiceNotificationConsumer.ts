@@ -58,7 +58,7 @@ export class ServiceNotificationConsumer {
             );
 
             console.log(
-              `Processed notification: identifier=${identifier.getValue()}, channel=${channel}`
+              `Processed notification: identifier=${identifier.getValue()}, channel=${channel}, eventType=${eventType}`
             );
             this.channel.ack(msg);
           } catch (error) {

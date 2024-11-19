@@ -37,6 +37,7 @@ const registerUser = new RegisterUser(
 const verifyUser = new VerifyUser(
   userRepository,
   contactRepository,
+  messageProvider,
   rabbitmqEventPublisher
 );
 const loginUser = new LoginUser(
@@ -57,6 +58,7 @@ const requestPasswordChange = new RequestPasswordChange(
 const updatePassword = new UpdatePassword(
   userRepository,
   hashService,
+  messageProvider,
   rabbitmqEventPublisher
 );
 

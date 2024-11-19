@@ -16,12 +16,20 @@ import { PostgresContactRepository } from "./persistence/PostgresContactReposito
 
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
+import { MemoryEventMessageProvider } from "../../auth/infrastructure/persistence/MemoryEventMessageProvider";
+
+const messageProvider = new MemoryEventMessageProvider();
+
 const contactRepository = new PostgresContactRepository(pool);
 
 const findContactById = new FindContactById(contactRepository);
 const findContactByEmail = new FindContactByEmail(contactRepository);
 const deleteContactById = new DeleteContactById(contactRepository);
-const saveContact = new SaveContact(contactRepository, rabbitmqEventPublisher);
+const saveContact = new SaveContact(
+  contactRepository,
+  messageProvider,
+  rabbitmqEventPublisher
+);
 const findAllContacts = new FindAllContacts(contactRepository);
 
 const saveContactController = new SaveContactController(saveContact);
