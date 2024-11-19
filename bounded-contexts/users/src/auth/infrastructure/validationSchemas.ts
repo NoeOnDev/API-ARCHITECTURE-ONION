@@ -22,5 +22,6 @@ export const resendNotificationSchema = Joi.object({
 
 export const updatePasswordSchema = Joi.object({
   userId: Joi.string().uuid().trim().required(),
+  eventType: Joi.string().trim().required(),
   newPassword: Joi.string().min(8).trim().required(),
 });

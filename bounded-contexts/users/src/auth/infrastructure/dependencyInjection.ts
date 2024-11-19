@@ -18,15 +18,19 @@ import { Argon2HashService } from "./services/Argon2HashService";
 import { JwtTokenService } from "./services/JwtTokenService";
 import { MemoryEventMessageProvider } from "./persistence/MemoryEventMessageProvider";
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
+import { JwtMiddleware } from "../../_shared/infrastructure/middlewares/JwtMiddleware";
 
 const hashService = new Argon2HashService();
 const tokenService = new JwtTokenService();
 const messageProvider = new MemoryEventMessageProvider();
 
+const jwtMiddleware = new JwtMiddleware(tokenService);
+
 const registerUser = new RegisterUser(
   userRepository,
   contactRepository,
   hashService,
+  tokenService,
   messageProvider,
   rabbitmqEventPublisher
 );
@@ -45,6 +49,7 @@ const loginUser = new LoginUser(
 
 const requestPasswordChange = new RequestPasswordChange(
   userRepository,
+  tokenService,
   messageProvider,
   rabbitmqEventPublisher
 );
@@ -78,4 +83,5 @@ export {
   updatePasswordController,
   resendNotificationController,
   verifyUser,
+  jwtMiddleware,
 };
