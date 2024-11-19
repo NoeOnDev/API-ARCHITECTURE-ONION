@@ -5,6 +5,7 @@ import {
   requestPasswordChangeController,
   updatePasswordController,
   resendNotificationController,
+  jwtMiddleware,
 } from "../../dependencyInjection";
 import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
 import {
@@ -34,11 +35,13 @@ authRoutes.post(
 );
 authRoutes.post(
   "/update-password",
+  jwtMiddleware.handle.bind(jwtMiddleware),
   validateRequest(updatePasswordSchema),
   updatePasswordController.handle.bind(updatePasswordController)
 );
 authRoutes.post(
   "/resend-notification",
+  jwtMiddleware.handle.bind(jwtMiddleware),
   validateRequest(resendNotificationSchema),
   resendNotificationController.handle.bind(resendNotificationController)
 );
