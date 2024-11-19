@@ -4,15 +4,21 @@ import { env } from "../../../_config/env.config";
 
 export class JwtTokenService implements TokenService {
   private readonly secret: string;
-  private readonly expiration: string;
 
   constructor() {
     this.secret = env.jwt.JWT_SECRET;
-    this.expiration = env.jwt.JWT_EXPIRATION;
   }
 
-  generateToken(payload: object): string {
-    return jwt.sign(payload, this.secret, { expiresIn: this.expiration });
+  generateAuthToken(payload: object): string {
+    return jwt.sign(payload, this.secret, {
+      expiresIn: env.jwt.JWT_EXPIRATION,
+    });
+  }
+
+  generateTempToken(payload: object): string {
+    return jwt.sign(payload, this.secret, {
+      expiresIn: env.jwt.JWT_EXPIRATION_TEMP,
+    });
   }
 
   verifyToken(token: string): Promise<object> {

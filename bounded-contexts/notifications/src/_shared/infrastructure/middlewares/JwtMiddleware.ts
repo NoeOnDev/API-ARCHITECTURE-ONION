@@ -13,8 +13,9 @@ export class JwtMiddleware {
 
     this.tokenService
       .verifyToken(token)
-      .then((payload) => {
-        req.body.payload = payload;
+      .then((payload: any) => {
+        req.body.userId = payload.id;
+        req.body.eventType = payload.type;
         next();
       })
       .catch(() => {
