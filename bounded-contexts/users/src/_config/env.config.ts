@@ -12,6 +12,7 @@ const envSchema = Joi.object({
   DB_PORT: Joi.number().required(),
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRATION: Joi.string().required(),
+  JWT_EXPIRATION_TEMP: Joi.string().required(),
   RABBIT_URL: Joi.string().required(),
 }).unknown();
 
@@ -30,6 +31,7 @@ const {
   DB_PORT,
   JWT_SECRET,
   JWT_EXPIRATION,
+  JWT_EXPIRATION_TEMP,
   RABBIT_URL,
 } = envVars;
 
@@ -47,6 +49,7 @@ interface Env {
   jwt: {
     JWT_SECRET: string;
     JWT_EXPIRATION: string;
+    JWT_EXPIRATION_TEMP: string;
   };
   rabbitmq: {
     RABBIT_URL: string;
@@ -67,6 +70,7 @@ export const env: Env = {
   jwt: {
     JWT_SECRET: JWT_SECRET,
     JWT_EXPIRATION: JWT_EXPIRATION,
+    JWT_EXPIRATION_TEMP: JWT_EXPIRATION_TEMP,
   },
   rabbitmq: {
     RABBIT_URL: RABBIT_URL,

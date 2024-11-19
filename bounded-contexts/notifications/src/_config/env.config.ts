@@ -16,6 +16,7 @@ const envSchema = Joi.object({
   RABBIT_URL: Joi.string().required(),
   JWT_SECRET: Joi.string().required(),
   JWT_EXPIRATION: Joi.string().required(),
+  JWT_EXPIRATION_TEMP: Joi.string().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -37,6 +38,7 @@ const {
   RABBIT_URL,
   JWT_SECRET,
   JWT_EXPIRATION,
+  JWT_EXPIRATION_TEMP,
 } = envVars;
 
 interface Env {
@@ -63,6 +65,7 @@ interface Env {
   jwt: {
     JWT_SECRET: string;
     JWT_EXPIRATION: string;
+    JWT_EXPIRATION_TEMP: string;
   };
 }
 
@@ -90,5 +93,6 @@ export const env: Env = {
   jwt: {
     JWT_SECRET: JWT_SECRET,
     JWT_EXPIRATION: JWT_EXPIRATION,
+    JWT_EXPIRATION_TEMP: JWT_EXPIRATION_TEMP,
   },
 };
