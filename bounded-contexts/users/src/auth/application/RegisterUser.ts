@@ -3,6 +3,7 @@ import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { HashService } from "../domain/services/HashService";
+import { TokenService } from "../domain/services/TokenService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { EventMessageProvider } from "../domain/EventMessageProvider";
@@ -15,6 +16,7 @@ export class RegisterUser {
     private userRepository: UserRepository,
     private contactRepository: ContactRepository,
     private hashService: HashService,
+    private tokenService: TokenService,
     private messageProvider: EventMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
@@ -23,7 +25,7 @@ export class RegisterUser {
     contactId: string,
     username: string,
     password: string
-  ): Promise<User> {
+  ): Promise<string> {
     const identifier = Identifier.fromString(contactId);
     const contact = await this.contactRepository.findById(identifier);
 
@@ -45,8 +47,14 @@ export class RegisterUser {
     await this.userRepository.save(user);
 
     const eventType = EventType.USER_VERIFICATION;
-    const message = this.messageProvider.getMessage(eventType);
+    const payload = {
+      id: user.getId().getValue(),
+      type: eventType.getValue(),
+    };
 
+    const token = this.tokenService.generateTempToken(payload);
+
+    const message = this.messageProvider.getMessage(eventType);
     const event = new NotificationEvent(
       user.getId(),
       "User",
@@ -59,6 +67,7 @@ export class RegisterUser {
     );
 
     await this.eventPublisher(event);
-    return user;
+
+    return token;
   }
 }

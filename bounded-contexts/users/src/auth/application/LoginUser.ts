@@ -38,16 +38,15 @@ export class LoginUser {
       throw new InvalidCredentialsError();
     }
 
+    const eventType = EventType.USER_AUTHENTICATION;
     const payload = {
-      id: user.getId(),
-      type: EventType.USER_AUTHENTICATION,
+      id: user.getId().getValue(),
+      type: eventType.getValue(),
     };
 
-    const token = this.tokenService.generateToken(payload);
+    const token = this.tokenService.generateTempToken(payload);
 
-    const eventType = EventType.USER_AUTHENTICATION;
     const message = this.messageProvider.getMessage(eventType);
-
     const event = new NotificationEvent(
       user.getId(),
       "User",

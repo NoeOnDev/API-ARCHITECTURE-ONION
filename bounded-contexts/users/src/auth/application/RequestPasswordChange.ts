@@ -1,4 +1,5 @@
 import { UserRepository } from "../../users/domain/UserRepository";
+import { TokenService } from "../domain/services/TokenService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { EventMessageProvider } from "../domain/EventMessageProvider";
@@ -8,6 +9,7 @@ import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotV
 export class RequestPasswordChange {
   constructor(
     private userRepository: UserRepository,
+    private tokenService: TokenService,
     private messageProvider: EventMessageProvider,
     private eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
@@ -23,8 +25,14 @@ export class RequestPasswordChange {
     }
 
     const eventType = EventType.USER_PASSWORD_CHANGE;
-    const message = this.messageProvider.getMessage(eventType);
+    const payload = {
+      id: user.getId().getValue(),
+      type: eventType.getValue(),
+    };
 
+    const token = this.tokenService.generateTempToken(payload);
+
+    const message = this.messageProvider.getMessage(eventType);
     const event = new NotificationEvent(
       user.getId(),
       "User",
@@ -38,6 +46,6 @@ export class RequestPasswordChange {
 
     await this.eventPublisher(event);
 
-    return user.getId().getValue();
+    return token;
   }
 }

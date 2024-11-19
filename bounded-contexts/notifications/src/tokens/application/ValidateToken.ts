@@ -2,6 +2,7 @@ import { TokenRepository } from "../domain/TokenRepository";
 import { UserVerifiedEvent } from "../domain/events/UserVerifiedEvent";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
+import { TokenService } from "../domain/services/TokenService";
 import { TokenNotFoundError } from "../../_shared/domain/errors/TokenNotFoundError";
 import { InvalidTokenUserError } from "../../_shared/domain/errors/InvalidTokenUserError";
 import { TokenExpiredError } from "../../_shared/domain/errors/TokenExpiredError";
@@ -11,6 +12,7 @@ import { InvalidEventTypeError } from "../../_shared/domain/errors/InvalidEventT
 export class ValidateToken {
   constructor(
     private tokenRepository: TokenRepository,
+    private tokenService: TokenService,
     private eventPublisher: (event: UserVerifiedEvent) => Promise<void>
   ) {}
 
@@ -18,7 +20,7 @@ export class ValidateToken {
     userId: string,
     code: string,
     eventType: string
-  ): Promise<{ isValid: boolean; userId?: string }> {
+  ): Promise<{ isValid: boolean; userId?: string; jwtToken?: string }> {
     const identifier = Identifier.fromString(userId);
     const token = await this.tokenRepository.findByCode(code);
 
@@ -47,11 +49,21 @@ export class ValidateToken {
     token.markAsUsed();
     await this.tokenRepository.save(token);
 
+    let jwtToken: string | undefined;
+    const payload = {
+      id: userId,
+      type: type.getValue(),
+    };
+
     if (type.equals(EventType.USER_VERIFICATION)) {
       const event = new UserVerifiedEvent(identifier);
       await this.eventPublisher(event);
+    } else if (type.equals(EventType.USER_AUTHENTICATION)) {
+      jwtToken = this.tokenService.generateAuthToken(payload);
+    } else if (type.equals(EventType.USER_PASSWORD_CHANGE)) {
+      jwtToken = this.tokenService.generateTempToken(payload);
     }
 
-    return { isValid: true, userId: token.getUserId().getValue() };
+    return { isValid: true, userId: token.getUserId().getValue(), jwtToken };
   }
 }
