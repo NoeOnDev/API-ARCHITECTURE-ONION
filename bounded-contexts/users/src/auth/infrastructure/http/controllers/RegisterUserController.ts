@@ -8,20 +8,12 @@ export class RegisterUserController {
   async handle(req: Request, res: Response): Promise<void> {
     const { contactId, username, password } = req.body;
     try {
-      const user = await this.registerUser.execute(
+      const token = await this.registerUser.execute(
         contactId.trim(),
         username.trim(),
         password.trim()
       );
-      res.status(201).json({
-        message: "User created successfully",
-        user: {
-          id: user.getId(),
-          username: user.getUsername(),
-          email: user.getContact().getEmail(),
-          phone: user.getContact().getPhone(),
-        },
-      });
+      res.status(201).json({ token });
     } catch (error) {
       if (error instanceof DomainError) {
         res.status(error.statusCode).json({ error: error.message });

@@ -6,7 +6,8 @@ export class UpdatePasswordController {
   constructor(private updatePassword: UpdatePassword) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { userId, newPassword } = req.body;
+    const { newPassword } = req.body;
+    const userId = req.body.userId;
     try {
       await this.updatePassword.execute(userId.trim(), newPassword.trim());
       res.status(200).json({ message: "Password updated successfully" });
