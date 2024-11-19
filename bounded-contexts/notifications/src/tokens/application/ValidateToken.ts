@@ -52,7 +52,9 @@ export class ValidateToken {
     let jwtToken: string | undefined;
     const payload = {
       id: userId,
-      type: type.getValue(),
+      type: type.equals(EventType.USER_PASSWORD_CHANGE)
+        ? EventType.USER_PASSWORD_UPDATED.getValue()
+        : type.getValue(),
     };
 
     if (type.equals(EventType.USER_VERIFICATION)) {

@@ -6,6 +6,7 @@ import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
 import { AccountNotVerifiedError } from "../../_shared/domain/errors/AccountNotVerifiedError";
+import { InvalidEventTypeError } from "../../_shared/domain/errors/InvalidEventTypeError";
 
 export class UpdatePassword {
   constructor(
@@ -15,7 +16,17 @@ export class UpdatePassword {
     private readonly eventPublisher: (event: NotificationEvent) => Promise<void>
   ) {}
 
-  async execute(userId: string, newPassword: string): Promise<void> {
+  async execute(
+    userId: string,
+    newPassword: string,
+    eventTypeString: string
+  ): Promise<void> {
+    const type = EventType.fromString(eventTypeString);
+
+    if (!type.equals(EventType.USER_PASSWORD_UPDATED)) {
+      throw new InvalidEventTypeError(eventTypeString);
+    }
+
     const identifier = Identifier.fromString(userId);
     const user = await this.userRepository.findById(identifier);
     if (!user) {
