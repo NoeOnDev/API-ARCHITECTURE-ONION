@@ -42,6 +42,7 @@ export class LoginUser {
     const payload = {
       id: user.getId().getValue(),
       type: eventType.getValue(),
+      role: user.getRole().getValue(),
     };
 
     const token = this.tokenService.generateTempToken(payload);

@@ -19,8 +19,9 @@ export class ValidateToken {
   async execute(
     userId: string,
     code: string,
-    eventType: string
-  ): Promise<{ isValid: boolean; jwtToken?: string }> {
+    eventType: string,
+    role: string
+  ): Promise<{ isValid: boolean; jwtToken?: string; role: string }> {
     const identifier = Identifier.fromString(userId);
     const token = await this.tokenRepository.findByCode(code);
 
@@ -55,6 +56,7 @@ export class ValidateToken {
       type: type.equals(EventType.USER_PASSWORD_CHANGE)
         ? EventType.USER_PASSWORD_UPDATED.getValue()
         : type.getValue(),
+      role,
     };
 
     if (type.equals(EventType.USER_VERIFICATION)) {
@@ -66,6 +68,6 @@ export class ValidateToken {
       jwtToken = this.tokenService.generateTempToken(payload);
     }
 
-    return { isValid: true, jwtToken };
+    return { isValid: true, jwtToken, role };
   }
 }

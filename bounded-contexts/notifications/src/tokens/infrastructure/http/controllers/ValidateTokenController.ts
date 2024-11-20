@@ -9,16 +9,19 @@ export class ValidateTokenController {
     const { code } = req.body;
     const userId = req.body.userId;
     const eventType = req.body.eventType;
+    const role = req.body.role;
 
     try {
       const result = await this.validateToken.execute(
         userId.trim(),
         code.trim(),
-        eventType.trim()
+        eventType.trim(),
+        role.trim()
       );
       res.status(200).send({
         message: "Token is valid",
         jwtToken: result.jwtToken,
+        role: result.role,
       });
     } catch (error) {
       if (error instanceof DomainError) {

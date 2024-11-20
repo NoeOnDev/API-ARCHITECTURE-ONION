@@ -4,6 +4,7 @@ export const registerUserSchema = Joi.object({
   contactId: Joi.string().uuid().trim().required(),
   username: Joi.string().min(3).max(30).trim().required(),
   password: Joi.string().min(8).trim().required(),
+  role: Joi.string().trim().required(),
 });
 
 export const loginUserSchema = Joi.object({
@@ -18,10 +19,12 @@ export const requestPasswordChangeSchema = Joi.object({
 export const resendNotificationSchema = Joi.object({
   userId: Joi.string().uuid().trim().required(),
   eventType: Joi.string().trim().required(),
+  role: Joi.string().trim(),
 });
 
 export const updatePasswordSchema = Joi.object({
   userId: Joi.string().uuid().trim().required(),
   eventType: Joi.string().trim().required(),
   newPassword: Joi.string().min(8).trim().required(),
+  role: Joi.string().trim(),
 });

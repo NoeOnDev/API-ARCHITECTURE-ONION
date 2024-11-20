@@ -28,6 +28,7 @@ export class RequestPasswordChange {
     const payload = {
       id: user.getId().getValue(),
       type: eventType.getValue(),
+      role: user.getRole().getValue(),
     };
 
     const token = this.tokenService.generateTempToken(payload);
