@@ -16,6 +16,7 @@ export class JwtMiddleware {
       .then((payload: any) => {
         req.body.userId = payload.id;
         req.body.eventType = payload.type;
+        req.body.role = payload.role;
         next();
       })
       .catch(() => {

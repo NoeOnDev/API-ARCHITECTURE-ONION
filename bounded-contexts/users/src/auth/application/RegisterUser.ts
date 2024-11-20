@@ -2,6 +2,7 @@ import { UserRepository } from "../../users/domain/UserRepository";
 import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { UserRole } from "../../users/domain/value-objects/UserRole";
 import { HashService } from "../domain/services/HashService";
 import { TokenService } from "../domain/services/TokenService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
@@ -24,7 +25,8 @@ export class RegisterUser {
   async execute(
     contactId: string,
     username: string,
-    password: string
+    password: string,
+    role: string
   ): Promise<string> {
     const identifier = Identifier.fromString(contactId);
     const contact = await this.contactRepository.findById(identifier);
@@ -43,13 +45,16 @@ export class RegisterUser {
     }
 
     const hashedPassword = await this.hashService.hash(password);
-    const user = new User(username, hashedPassword, contact);
+    const userRole = UserRole.fromValue(role);
+
+    const user = new User(username, hashedPassword, contact, userRole);
     await this.userRepository.save(user);
 
     const eventType = EventType.USER_VERIFICATION;
     const payload = {
       id: user.getId().getValue(),
       type: eventType.getValue(),
+      role: userRole.getValue(),
     };
 
     const token = this.tokenService.generateTempToken(payload);

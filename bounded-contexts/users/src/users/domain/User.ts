@@ -1,5 +1,6 @@
 import { Contact } from "../../contacts/domain/Contact";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { UserRole } from "./value-objects/UserRole";
 
 export class User {
   private id: Identifier;
@@ -7,11 +8,13 @@ export class User {
   private password: string;
   private contact: Contact;
   private verified: Date | null;
+  private role: UserRole;
 
   constructor(
     username: string,
     password: string,
     contact: Contact,
+    role: UserRole,
     id?: Identifier,
     verified: Date | null = null
   ) {
@@ -19,6 +22,7 @@ export class User {
     this.username = username;
     this.password = password;
     this.contact = contact;
+    this.role = role;
     this.verified = verified;
   }
 
@@ -36,6 +40,14 @@ export class User {
 
   getContact(): Contact {
     return this.contact;
+  }
+
+  getRole(): UserRole {
+    return this.role;
+  }
+
+  setRole(role: UserRole): void {
+    this.role = role;
   }
 
   getEmail(): string {

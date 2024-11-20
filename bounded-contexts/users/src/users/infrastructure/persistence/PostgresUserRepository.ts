@@ -5,6 +5,7 @@ import { Contact } from "../../../contacts/domain/Contact";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 import { ContactHobby } from "../../../contacts/domain/value-objects/ContactHobbit";
 import { ContactStatus } from "../../../contacts/domain/value-objects/ContactStatus";
+import { UserRole } from "../../domain/value-objects/UserRole";
 
 export class PostgresUserRepository implements UserRepository {
   constructor(private pool: Pool) {}
@@ -19,10 +20,12 @@ export class PostgresUserRepository implements UserRepository {
       ContactStatus.fromValue(row.status),
       Identifier.fromString(row.contact_id)
     );
+
     return new User(
       row.username,
       row.password,
       contact,
+      UserRole.fromValue(row.role),
       Identifier.fromString(row.id),
       row.verified
     );
@@ -30,13 +33,14 @@ export class PostgresUserRepository implements UserRepository {
 
   async save(user: User): Promise<void> {
     const query = `
-      INSERT INTO users (id, username, password, contact_id, verified)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO users (id, username, password, contact_id, verified, role)
+      VALUES ($1, $2, $3, $4, $5, $6)
       ON CONFLICT (id) DO UPDATE
       SET username = EXCLUDED.username,
           password = EXCLUDED.password,
           contact_id = EXCLUDED.contact_id,
-          verified = EXCLUDED.verified;
+          verified = EXCLUDED.verified,
+          role = EXCLUDED.role;
     `;
     const values = [
       user.getId().getValue(),
@@ -44,6 +48,7 @@ export class PostgresUserRepository implements UserRepository {
       user.getPassword(),
       user.getContact().getId().getValue(),
       user.getVerificationDate(),
+      user.getRole().getValue(),
     ];
     await this.pool.query(query, values);
   }
