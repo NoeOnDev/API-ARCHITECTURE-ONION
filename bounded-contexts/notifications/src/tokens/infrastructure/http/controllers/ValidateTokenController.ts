@@ -18,7 +18,6 @@ export class ValidateTokenController {
       );
       res.status(200).send({
         message: "Token is valid",
-        userId: result.userId,
         jwtToken: result.jwtToken,
       });
     } catch (error) {

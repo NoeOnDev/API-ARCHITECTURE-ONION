@@ -1,4 +1,5 @@
 import { ContactStatus } from "./value-objects/ContactStatus";
+import { ContactHobby } from "./value-objects/ContactHobbit";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 
 export class Contact {
@@ -8,12 +9,14 @@ export class Contact {
   private email: string;
   private phone: string;
   private status: ContactStatus;
+  private hobby: ContactHobby;
 
   constructor(
     firstName: string,
     lastName: string,
     email: string,
     phone: string,
+    hobby: ContactHobby,
     status: ContactStatus = ContactStatus.LEAD,
     id?: Identifier
   ) {
@@ -23,6 +26,7 @@ export class Contact {
     this.email = email;
     this.phone = phone;
     this.status = status;
+    this.hobby = hobby;
   }
 
   getId(): Identifier {
@@ -43,6 +47,10 @@ export class Contact {
 
   getPhone(): string {
     return this.phone;
+  }
+
+  getHobby(): ContactHobby {
+    return this.hobby;
   }
 
   promoteToUser(): void {

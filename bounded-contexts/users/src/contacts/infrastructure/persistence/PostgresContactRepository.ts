@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import { Contact } from "../../domain/Contact";
 import { ContactRepository } from "../../domain/ContactRepository";
 import { ContactStatus } from "../../domain/value-objects/ContactStatus";
+import { ContactHobby } from "../../domain/value-objects/ContactHobbit";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 
 export class PostgresContactRepository implements ContactRepository {
@@ -13,6 +14,7 @@ export class PostgresContactRepository implements ContactRepository {
       row.last_name,
       row.email,
       row.phone,
+      ContactHobby.fromString(row.hobby),
       ContactStatus.fromValue(row.status),
       Identifier.fromString(row.id)
     );
@@ -20,14 +22,15 @@ export class PostgresContactRepository implements ContactRepository {
 
   async save(contact: Contact): Promise<void> {
     const query = `
-      INSERT INTO contacts (id, first_name, last_name, email, phone, status)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO contacts (id, first_name, last_name, email, phone, status, hobby)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       ON CONFLICT (id) DO UPDATE
       SET first_name = EXCLUDED.first_name,
           last_name = EXCLUDED.last_name,
           email = EXCLUDED.email,
           phone = EXCLUDED.phone,
-          status = EXCLUDED.status;
+          status = EXCLUDED.status,
+          hobby = EXCLUDED.hobby;
     `;
     const values = [
       contact.getId().getValue(),
@@ -36,6 +39,7 @@ export class PostgresContactRepository implements ContactRepository {
       contact.getEmail(),
       contact.getPhone(),
       contact.getStatus().getValue(),
+      contact.getHobby().getValue(),
     ];
     await this.pool.query(query, values);
   }

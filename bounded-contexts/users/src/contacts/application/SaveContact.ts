@@ -4,6 +4,7 @@ import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { EventMessageProvider } from "../../auth/domain/EventMessageProvider";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
 import { EmailAlreadyInUseError } from "../../_shared/domain/errors/EmailAlreadyInUseError";
+import { ContactHobby } from "../domain/value-objects/ContactHobbit";
 
 export class SaveContact {
   constructor(
@@ -16,7 +17,8 @@ export class SaveContact {
     firstName: string,
     lastName: string,
     email: string,
-    phone: string
+    phone: string,
+    hobby: string
   ): Promise<Contact> {
     const existingUserContact = await this.contactRepository.findByEmail(email);
 
@@ -24,7 +26,14 @@ export class SaveContact {
       throw new EmailAlreadyInUseError();
     }
 
-    const contact = new Contact(firstName, lastName, email, phone);
+    const contactHobby = ContactHobby.fromString(hobby);
+    const contact = new Contact(
+      firstName,
+      lastName,
+      email,
+      phone,
+      contactHobby
+    );
     await this.contactRepository.save(contact);
 
     const eventType = EventType.CONTACT_SAVED;

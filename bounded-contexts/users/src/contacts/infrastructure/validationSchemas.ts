@@ -5,4 +5,5 @@ export const saveContactSchema = Joi.object({
   lastName: Joi.string().trim().required(),
   email: Joi.string().trim().email().required(),
   phone: Joi.string().trim().required(),
+  hobby: Joi.string().trim().required(),
 });

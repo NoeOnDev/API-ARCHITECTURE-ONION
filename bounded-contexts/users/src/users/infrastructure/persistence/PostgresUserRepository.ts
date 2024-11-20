@@ -3,6 +3,8 @@ import { User } from "../../domain/User";
 import { UserRepository } from "../../domain/UserRepository";
 import { Contact } from "../../../contacts/domain/Contact";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
+import { ContactHobby } from "../../../contacts/domain/value-objects/ContactHobbit";
+import { ContactStatus } from "../../../contacts/domain/value-objects/ContactStatus";
 
 export class PostgresUserRepository implements UserRepository {
   constructor(private pool: Pool) {}
@@ -13,7 +15,8 @@ export class PostgresUserRepository implements UserRepository {
       row.last_name,
       row.email,
       row.phone,
-      row.status,
+      ContactHobby.fromString(row.hobby),
+      ContactStatus.fromValue(row.status),
       Identifier.fromString(row.contact_id)
     );
     return new User(
@@ -47,7 +50,7 @@ export class PostgresUserRepository implements UserRepository {
 
   async findAll(): Promise<User[]> {
     const query = `
-      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status
+      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status, c.hobby
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
     `;
@@ -57,7 +60,7 @@ export class PostgresUserRepository implements UserRepository {
 
   async findById(id: Identifier): Promise<User | null> {
     const query = `
-      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status
+      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status, c.hobby
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
       WHERE u.id = $1
@@ -76,7 +79,7 @@ export class PostgresUserRepository implements UserRepository {
 
   async findByUsername(username: string): Promise<User | null> {
     const query = `
-      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status
+      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status, c.hobby
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
       WHERE u.username = $1
@@ -90,7 +93,7 @@ export class PostgresUserRepository implements UserRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     const query = `
-      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status
+      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status, c.hobby
       FROM users u
       JOIN contacts c ON u.contact_id = c.id
       WHERE c.email = $1

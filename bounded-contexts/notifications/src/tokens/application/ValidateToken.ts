@@ -20,7 +20,7 @@ export class ValidateToken {
     userId: string,
     code: string,
     eventType: string
-  ): Promise<{ isValid: boolean; userId?: string; jwtToken?: string }> {
+  ): Promise<{ isValid: boolean; jwtToken?: string }> {
     const identifier = Identifier.fromString(userId);
     const token = await this.tokenRepository.findByCode(code);
 
@@ -66,6 +66,6 @@ export class ValidateToken {
       jwtToken = this.tokenService.generateTempToken(payload);
     }
 
-    return { isValid: true, userId: token.getUserId().getValue(), jwtToken };
+    return { isValid: true, jwtToken };
   }
 }

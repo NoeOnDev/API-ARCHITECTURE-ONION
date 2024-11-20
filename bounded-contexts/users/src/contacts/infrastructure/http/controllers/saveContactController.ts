@@ -6,13 +6,14 @@ export class SaveContactController {
   constructor(private saveContact: SaveContact) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { firstName, lastName, email, phone } = req.body;
+    const { firstName, lastName, email, phone, hobby } = req.body;
     try {
       const contact = await this.saveContact.execute(
         firstName.trim(),
         lastName.trim(),
         email.trim(),
-        phone.trim()
+        phone.trim(),
+        hobby.trim()
       );
       res.status(201).json(contact);
     } catch (error) {
