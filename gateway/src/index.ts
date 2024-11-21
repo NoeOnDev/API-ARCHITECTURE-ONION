@@ -25,8 +25,8 @@ app.use("/api/v1/users", proxy(env.services.USERS_SERVICE_URL));
 app.use("/api/v1/notifications", proxy(env.services.NOTIFICATIONS_SERVICE_URL));
 app.use("/api/v1/payments", proxy(env.services.PAYMENTS_SERVICE_URL));
 
-app.get("/api/v1/validate-token", validateToken, (req, res) => {
-  res.status(200).json({ message: "Token is valid", user: (req as any).user });
+app.get("/api/v1/validate-token", validateToken, (_req, res) => {
+  res.status(200).json({ message: "Token is valid" });
 });
 
 app.listen(port, () => {

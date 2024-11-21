@@ -7,10 +7,9 @@ export class ValidateTokenController {
 
   async handle(req: Request, res: Response): Promise<void> {
     const { code } = req.body;
-    const userId = req.body.userId;
-    const eventType = req.body.eventType;
-    const role = req.body.role;
-
+    const userId = req.user.id;
+    const eventType = req.user.type;
+    const role = req.user.role;
     try {
       const result = await this.validateToken.execute(
         userId.trim(),
