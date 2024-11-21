@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { TokenService } from "../../../auth/domain/services/TokenService";
+import { JwtPayload } from "../../domain/types/JwtPayload";
 
 export class JwtMiddleware {
   constructor(private tokenService: TokenService) {}
@@ -13,10 +14,8 @@ export class JwtMiddleware {
 
     this.tokenService
       .verifyToken(token)
-      .then((payload: any) => {
-        req.body.userId = payload.id;
-        req.body.eventType = payload.type;
-        req.body.role = payload.role;
+      .then((payload) => {
+        req.user = payload as JwtPayload;
         next();
       })
       .catch(() => {

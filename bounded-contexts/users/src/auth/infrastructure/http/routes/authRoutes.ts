@@ -12,7 +12,6 @@ import {
   registerUserSchema,
   loginUserSchema,
   requestPasswordChangeSchema,
-  resendNotificationSchema,
   updatePasswordSchema,
 } from "../../validationSchemas";
 
@@ -42,7 +41,6 @@ authRoutes.post(
 authRoutes.post(
   "/resend-notification",
   jwtMiddleware.handle.bind(jwtMiddleware),
-  validateRequest(resendNotificationSchema),
   resendNotificationController.handle.bind(resendNotificationController)
 );
 

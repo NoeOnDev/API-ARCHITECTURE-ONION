@@ -6,8 +6,8 @@ export class ResendNotificationController {
   constructor(private resendNotification: ResendNotification) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const userId = req.body.userId;
-    const eventType = req.body.eventType;
+    const userId = req.user.id;
+    const eventType = req.user.type;
     try {
       await this.resendNotification.execute(userId.trim(), eventType.trim());
       res.status(200).json({ message: "Notification resent successfully" });

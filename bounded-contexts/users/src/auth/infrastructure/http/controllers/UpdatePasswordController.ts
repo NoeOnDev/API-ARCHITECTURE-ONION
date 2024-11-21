@@ -7,8 +7,8 @@ export class UpdatePasswordController {
 
   async handle(req: Request, res: Response): Promise<void> {
     const { newPassword } = req.body;
-    const userId = req.body.userId;
-    const eventType = req.body.eventType;
+    const userId = req.user.id;
+    const eventType = req.user.type;
     try {
       await this.updatePassword.execute(
         userId.trim(),
