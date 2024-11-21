@@ -12,12 +12,14 @@ export class TwilioNotificationService {
   ): Promise<void> {
     if (channel.isWhatsApp()) {
       try {
+        const formattedRecipient = this.formatRecipientNumber(recipient);
+        console.log(`Sending WhatsApp message to ${formattedRecipient}`);
         await this.retry(
           async () => {
             await twilioClient.messages.create({
               body: message,
               from: `whatsapp:${env.twilio.TWILIO_PHONE_NUMBER}`,
-              to: `whatsapp:${recipient}`,
+              to: `whatsapp:${formattedRecipient}`,
             });
           },
           10,
@@ -33,6 +35,12 @@ export class TwilioNotificationService {
     } else {
       throw new UnsupportedChannelError(channel.getValue());
     }
+  }
+
+  private formatRecipientNumber(recipient: string): string {
+    const countryCode = recipient.slice(0, 3);
+    const restOfNumber = recipient.slice(3);
+    return `${countryCode}1${restOfNumber}`;
   }
 
   private async retry(
