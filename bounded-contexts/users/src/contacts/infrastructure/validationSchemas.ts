@@ -5,13 +5,13 @@ export const saveContactSchema = Joi.object({
     .min(2)
     .max(50)
     .trim()
-    .regex(/^[a-zA-Z]+$/)
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$/)
     .required(),
   lastName: Joi.string()
     .min(2)
     .max(50)
     .trim()
-    .regex(/^[a-zA-Z]+$/)
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$/)
     .required(),
   email: Joi.string().trim().email().required(),
   phone: Joi.string()
@@ -20,6 +20,6 @@ export const saveContactSchema = Joi.object({
     .required(),
   hobby: Joi.string()
     .trim()
-    .regex(/^[a-zA-Z]+$/)
+    .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
     .required(),
 });
