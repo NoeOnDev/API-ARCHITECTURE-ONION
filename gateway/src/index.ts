@@ -4,7 +4,7 @@ import rateLimit from "express-rate-limit";
 import morgan from "morgan";
 import cors from "cors";
 import { env } from "./_config/env.config";
-import { validateToken } from "./middlewares/auth.middleware";
+import validateTokenRoutes from "./auth/infrastructure/http/routes/validateTokenRoutes";
 
 const app = express();
 const port = env.port.PORT;
@@ -24,10 +24,7 @@ app.use(limiter);
 app.use("/api/v1/users", proxy(env.services.USERS_SERVICE_URL));
 app.use("/api/v1/notifications", proxy(env.services.NOTIFICATIONS_SERVICE_URL));
 app.use("/api/v1/payments", proxy(env.services.PAYMENTS_SERVICE_URL));
-
-app.get("/api/v1/validate-token", validateToken, (_req, res) => {
-  res.status(200).json({ message: "Token is valid" });
-});
+app.use("/api/v1", validateTokenRoutes);
 
 app.listen(port, () => {
   console.log(`Gateway running at http://localhost:${port} 🚀`);
