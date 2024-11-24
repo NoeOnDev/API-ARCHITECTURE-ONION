@@ -23,3 +23,22 @@ export const saveContactSchema = Joi.object({
     .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
     .required(),
 });
+
+export const updateContactDetailsSchema = Joi.object({
+  firstName: Joi.string()
+    .min(2)
+    .max(50)
+    .trim()
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$/)
+    .required(),
+  lastName: Joi.string()
+    .min(2)
+    .max(50)
+    .trim()
+    .regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]+(?: [a-zA-ZáéíóúÁÉÍÓÚñÑ]+)*$/)
+    .required(),
+  hobby: Joi.string()
+    .trim()
+    .regex(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
+    .required(),
+});

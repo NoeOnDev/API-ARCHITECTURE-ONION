@@ -5,9 +5,14 @@ import {
   findContactByIdController,
   findContactByEmailController,
   deleteContactByIdController,
+  updateContactDetailsController,
 } from "../../dependencyInjection";
 import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
-import { saveContactSchema } from "../../validationSchemas";
+import {
+  saveContactSchema,
+  updateContactDetailsSchema,
+} from "../../validationSchemas";
+import { jwtMiddleware } from "../../../../auth/infrastructure/dependencyInjection";
 
 const contactRoutes = Router();
 
@@ -31,6 +36,13 @@ contactRoutes.get(
 contactRoutes.delete(
   "/contacts/id/:id",
   deleteContactByIdController.handle.bind(deleteContactByIdController)
+);
+
+contactRoutes.put(
+  "/contacts",
+  jwtMiddleware.handle.bind(jwtMiddleware),
+  validateRequest(updateContactDetailsSchema),
+  updateContactDetailsController.handle.bind(updateContactDetailsController)
 );
 
 export default contactRoutes;

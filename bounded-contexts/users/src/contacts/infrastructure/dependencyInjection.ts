@@ -5,18 +5,21 @@ import { FindAllContacts } from "../application/FindAllContacts";
 import { FindContactById } from "../application/FindContactById";
 import { FindContactByEmail } from "../application/FindContactByEmail";
 import { DeleteContactById } from "../application/DeleteContactById";
+import { UpdateContactDetails } from "../application/UpdateContactDetails";
 
 import { SaveContactController } from "./http/controllers/saveContactController";
 import { FindAllContactsController } from "./http/controllers/findAllContactsController";
 import { FindContactByIdController } from "./http/controllers/findContactByIdController";
 import { FindContactByEmailController } from "./http/controllers/findContactByEmailController";
 import { DeleteContactByIdController } from "./http/controllers/deleteContactByIdController";
+import { UpdateContactDetailsController } from "./http/controllers/UpdateContactDetailsController";
 
 import { PostgresContactRepository } from "./persistence/PostgresContactRepository";
 
 import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
 
 import { MemoryEventMessageProvider } from "../../auth/infrastructure/persistence/MemoryEventMessageProvider";
+import { userRepository } from "../../users/infrastructure/dependencyInjection";
 
 const messageProvider = new MemoryEventMessageProvider();
 
@@ -31,6 +34,10 @@ const saveContact = new SaveContact(
   rabbitmqEventPublisher
 );
 const findAllContacts = new FindAllContacts(contactRepository);
+const updateContactDetails = new UpdateContactDetails(
+  userRepository,
+  contactRepository
+);
 
 const saveContactController = new SaveContactController(saveContact);
 const findAllContactsController = new FindAllContactsController(
@@ -45,6 +52,9 @@ const findContactByEmailController = new FindContactByEmailController(
 const deleteContactByIdController = new DeleteContactByIdController(
   deleteContactById
 );
+const updateContactDetailsController = new UpdateContactDetailsController(
+  updateContactDetails
+);
 
 export {
   contactRepository,
@@ -53,4 +63,5 @@ export {
   findContactByIdController,
   findContactByEmailController,
   deleteContactByIdController,
+  updateContactDetailsController,
 };
