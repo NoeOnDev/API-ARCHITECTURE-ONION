@@ -6,12 +6,14 @@ import {
   findUserByEmailController,
   deleteUserByIdController,
 } from "../../dependencyInjection";
+import { jwtMiddleware } from "../../../../auth/infrastructure/dependencyInjection";
 
 const userRoutes = Router();
 
 userRoutes.get("/", findAllUsersController.handle.bind(findAllUsersController));
 userRoutes.get(
-  "/id/:id",
+  "/id",
+  jwtMiddleware.handle.bind(jwtMiddleware),
   findUserByIdController.handle.bind(findUserByIdController)
 );
 userRoutes.get(

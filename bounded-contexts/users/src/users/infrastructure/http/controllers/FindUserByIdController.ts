@@ -6,7 +6,7 @@ export class FindUserByIdController {
   constructor(private findUserById: FindUserById) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
+    const id = req.user.id;
     try {
       const user = await this.findUserById.execute(id.trim());
       res.json(user);
