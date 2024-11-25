@@ -4,6 +4,7 @@ import { ReportRepository } from "../../domain/ReportRepository";
 import { ReportCategory } from "../../domain/value-objects/ReportCategory";
 import { ReportAddress } from "../../domain/value-objects/ReportAddress";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
+import { ReportStatus } from "../../domain/value-objects/ReportStatus";
 
 export class PostgresReportRepository implements ReportRepository {
   constructor(private pool: Pool) {}
@@ -16,14 +17,15 @@ export class PostgresReportRepository implements ReportRepository {
       new ReportAddress(row.locality, row.street),
       Identifier.fromString(row.user_id),
       Identifier.fromString(row.id),
-      row.created_at
+      row.created_at,
+      ReportStatus.from(row.status)
     );
   }
 
   async save(report: Report): Promise<void> {
     const query = `
-      INSERT INTO reports (id, title, category, description, locality, street, user_id, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO reports (id, title, category, description, locality, street, user_id, created_at, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       ON CONFLICT (id) DO UPDATE
       SET title = EXCLUDED.title,
           category = EXCLUDED.category,
@@ -31,7 +33,8 @@ export class PostgresReportRepository implements ReportRepository {
           locality = EXCLUDED.locality,
           street = EXCLUDED.street,
           user_id = EXCLUDED.user_id,
-          created_at = EXCLUDED.created_at;
+          created_at = EXCLUDED.created_at,
+          status = EXCLUDED.status;
     `;
     const values = [
       report.getId().getValue(),
@@ -42,6 +45,7 @@ export class PostgresReportRepository implements ReportRepository {
       report.getAddress().getStreet(),
       report.getUserId().getValue(),
       report.getCreatedAt(),
+      report.getStatus().getValue(),
     ];
     await this.pool.query(query, values);
   }

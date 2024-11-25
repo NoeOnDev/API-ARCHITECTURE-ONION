@@ -1,6 +1,7 @@
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { ReportAddress } from "./value-objects/ReportAddress";
 import { ReportCategory } from "./value-objects/ReportCategory";
+import { ReportStatus } from "./value-objects/ReportStatus";
 
 export class Report {
   private id: Identifier;
@@ -10,6 +11,7 @@ export class Report {
   private address: ReportAddress;
   private userId: Identifier;
   private createdAt: Date;
+  private status: ReportStatus;
 
   constructor(
     title: string,
@@ -18,7 +20,8 @@ export class Report {
     address: ReportAddress,
     userId: Identifier,
     id?: Identifier,
-    createdAt?: Date
+    createdAt?: Date,
+    status: ReportStatus = ReportStatus.PENDING
   ) {
     this.id = id || Identifier.create();
     this.title = title.trim();
@@ -27,6 +30,7 @@ export class Report {
     this.address = address;
     this.userId = userId;
     this.createdAt = createdAt || new Date();
+    this.status = status;
   }
 
   getId(): Identifier {
@@ -55,5 +59,13 @@ export class Report {
 
   getCreatedAt(): Date {
     return this.createdAt;
+  }
+
+  getStatus(): ReportStatus {
+    return this.status;
+  }
+
+  setStatus(status: ReportStatus): void {
+    this.status = status;
   }
 }
