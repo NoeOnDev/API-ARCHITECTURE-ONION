@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createReportController,
   findReportsByLocalityController,
+  findReportsByUserIdController,
   jwtMiddleware,
 } from "../../dependencyInjection";
 
@@ -16,6 +17,11 @@ reportsRoutes.get(
   "/",
   jwtMiddleware.handle.bind(jwtMiddleware),
   findReportsByLocalityController.handle.bind(findReportsByLocalityController)
+);
+reportsRoutes.get(
+  "/user",
+  jwtMiddleware.handle.bind(jwtMiddleware),
+  findReportsByUserIdController.handle.bind(findReportsByUserIdController)
 );
 
 export default reportsRoutes;

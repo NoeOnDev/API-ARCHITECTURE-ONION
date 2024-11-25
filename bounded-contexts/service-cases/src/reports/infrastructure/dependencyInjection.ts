@@ -4,9 +4,11 @@ import { PostgresReportRepository } from "./persistence/PostgresReportRepository
 
 import { CreateReport } from "../application/CreateReport";
 import { FindReportsByLocality } from "../application/FindReportsByLocality";
+import { FindReportsByUserId } from "../application/FindReportsByUserId";
 
 import { CreateReportController } from "../infrastructure/http/controllers/CreateReportController";
 import { FindReportsByLocalityController } from "../infrastructure/http/controllers/FindReportsByLocalityController";
+import { FindReportsByUserIdController } from "../infrastructure/http/controllers/FindReportsByUserIdController";
 
 import { JwtMiddleware } from "../../_shared/infrastructure/middlewares/JwtMiddleware";
 import { JwtTokenService } from "./services/JwtTokenService";
@@ -19,14 +21,19 @@ const reportRepository = new PostgresReportRepository(pool);
 
 const createReport = new CreateReport(reportRepository);
 const findReportsByLocality = new FindReportsByLocality(reportRepository);
+const findReportsByUserId = new FindReportsByUserId(reportRepository);
 
 const createReportController = new CreateReportController(createReport);
 const findReportsByLocalityController = new FindReportsByLocalityController(
   findReportsByLocality
 );
+const findReportsByUserIdController = new FindReportsByUserIdController(
+  findReportsByUserId
+);
 
 export {
   createReportController,
   findReportsByLocalityController,
+  findReportsByUserIdController,
   jwtMiddleware,
 };
