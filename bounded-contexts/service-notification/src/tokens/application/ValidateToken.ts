@@ -20,7 +20,11 @@ export class ValidateToken {
     userId: string,
     code: string,
     eventType: string,
-    role: string
+    role: string,
+    locality: string,
+    firstName: string,
+    email: string,
+    phone: string
   ): Promise<{ isValid: boolean; jwtToken?: string; role: string }> {
     const identifier = Identifier.fromString(userId);
     const token = await this.tokenRepository.findByCode(code);
@@ -57,6 +61,10 @@ export class ValidateToken {
         ? EventType.USER_PASSWORD_UPDATED.getValue()
         : type.getValue(),
       role,
+      locality,
+      firstName,
+      email,
+      phone,
     };
 
     if (type.equals(EventType.USER_VERIFICATION)) {

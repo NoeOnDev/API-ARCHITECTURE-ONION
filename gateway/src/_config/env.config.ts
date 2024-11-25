@@ -10,6 +10,7 @@ const envSchema = Joi.object({
   JWT_EXPIRATION_TEMP: Joi.string().required(),
   USERS_SERVICE_URL: Joi.string().uri().required(),
   NOTIFICATIONS_SERVICE_URL: Joi.string().uri().required(),
+  CASES_SERVICE_URL: Joi.string().uri().required(),
   PAYMENTS_SERVICE_URL: Joi.string().uri().required(),
 }).unknown();
 
@@ -26,6 +27,7 @@ const {
   JWT_EXPIRATION_TEMP,
   USERS_SERVICE_URL,
   NOTIFICATIONS_SERVICE_URL,
+  CASES_SERVICE_URL,
   PAYMENTS_SERVICE_URL,
 } = envVars;
 
@@ -41,6 +43,7 @@ interface Env {
   services: {
     USERS_SERVICE_URL: string;
     NOTIFICATIONS_SERVICE_URL: string;
+    CASES_SERVICE_URL: string;
     PAYMENTS_SERVICE_URL: string;
   };
 }
@@ -57,6 +60,7 @@ export const env: Env = {
   services: {
     USERS_SERVICE_URL: USERS_SERVICE_URL,
     NOTIFICATIONS_SERVICE_URL: NOTIFICATIONS_SERVICE_URL,
+    CASES_SERVICE_URL: CASES_SERVICE_URL,
     PAYMENTS_SERVICE_URL: PAYMENTS_SERVICE_URL,
   },
 };

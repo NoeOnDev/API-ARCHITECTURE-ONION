@@ -10,12 +10,20 @@ export class ValidateTokenController {
     const userId = req.user.id;
     const eventType = req.user.type;
     const role = req.user.role;
+    const locality = req.user.locality;
+    const firstName = req.user.firstName;
+    const email = req.user.email;
+    const phone = req.user.phone;
     try {
       const result = await this.validateToken.execute(
         userId.trim(),
         code.trim(),
         eventType.trim(),
-        role.trim()
+        role.trim(),
+        locality.trim(),
+        firstName.trim(),
+        email.trim(),
+        phone.trim()
       );
       res.status(200).send({
         message: "Token is valid",

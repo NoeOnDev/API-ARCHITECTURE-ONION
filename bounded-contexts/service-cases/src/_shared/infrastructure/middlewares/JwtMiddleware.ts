@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { TokenService } from "../../../auth/domain/services/TokenService";
+import { TokenService } from "../../../reports/domain/services/TokenService";
 import { JwtPayload } from "../../domain/types/JwtPayload";
 
 export class JwtMiddleware {

@@ -43,6 +43,10 @@ export class LoginUser {
       id: user.getId().getValue(),
       type: eventType.getValue(),
       role: user.getRole().getValue(),
+      locality: user.getAddress().getLocality(),
+      firstName: user.getContact().getFirstName(),
+      email: user.getEmail(),
+      phone: user.getPhone(),
     };
 
     const token = this.tokenService.generateTempToken(payload);
