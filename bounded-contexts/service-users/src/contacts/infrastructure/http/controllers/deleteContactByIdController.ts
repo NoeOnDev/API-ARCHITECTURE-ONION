@@ -14,7 +14,11 @@ export class DeleteContactByIdController {
       if (error instanceof DomainError) {
         res.status(error.statusCode).json({ error: error.message });
       } else {
-        res.status(500).json({ error: "Error deleting contact" });
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        res
+          .status(500)
+          .json({ error: "Error deleting contact", details: errorMessage });
       }
     }
   }

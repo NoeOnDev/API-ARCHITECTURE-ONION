@@ -6,6 +6,7 @@ import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 import { ContactHobby } from "../../../contacts/domain/value-objects/ContactHobbit";
 import { ContactStatus } from "../../../contacts/domain/value-objects/ContactStatus";
 import { UserRole } from "../../domain/value-objects/UserRole";
+import { UserAddress } from "../../domain/value-objects/UserAddress";
 
 export class PostgresUserRepository implements UserRepository {
   constructor(private pool: Pool) {}
@@ -21,11 +22,14 @@ export class PostgresUserRepository implements UserRepository {
       Identifier.fromString(row.contact_id)
     );
 
+    const address = new UserAddress(row.locality, row.street);
+
     return new User(
       row.username,
       row.password,
       contact,
       UserRole.fromValue(row.role),
+      address,
       Identifier.fromString(row.id),
       row.verified
     );
@@ -33,14 +37,16 @@ export class PostgresUserRepository implements UserRepository {
 
   async save(user: User): Promise<void> {
     const query = `
-      INSERT INTO users (id, username, password, contact_id, verified, role)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO users (id, username, password, contact_id, verified, role, locality, street)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       ON CONFLICT (id) DO UPDATE
       SET username = EXCLUDED.username,
           password = EXCLUDED.password,
           contact_id = EXCLUDED.contact_id,
           verified = EXCLUDED.verified,
-          role = EXCLUDED.role;
+          role = EXCLUDED.role,
+          locality = EXCLUDED.locality,
+          street = EXCLUDED.street;
     `;
     const values = [
       user.getId().getValue(),
@@ -49,6 +55,8 @@ export class PostgresUserRepository implements UserRepository {
       user.getContact().getId().getValue(),
       user.getVerificationDate(),
       user.getRole().getValue(),
+      user.getAddress().getLocality(),
+      user.getAddress().getStreet(),
     ];
     await this.pool.query(query, values);
   }

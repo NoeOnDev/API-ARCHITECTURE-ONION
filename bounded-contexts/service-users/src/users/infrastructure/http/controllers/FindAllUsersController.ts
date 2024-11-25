@@ -9,7 +9,11 @@ export class FindAllUsersController {
       const users = await this.findAllUsers.execute();
       res.json(users);
     } catch (error) {
-      res.status(500).send("Error retrieving users");
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      res
+        .status(500)
+        .json({ error: "Error retrieving users", details: errorMessage });
     }
   }
 }

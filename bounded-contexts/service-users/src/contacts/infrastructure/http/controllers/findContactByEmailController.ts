@@ -14,7 +14,11 @@ export class FindContactByEmailController {
       if (error instanceof DomainError) {
         res.status(error.statusCode).json({ error: error.message });
       } else {
-        res.status(500).json({ error: "Error retrieving contact" });
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        res
+          .status(500)
+          .json({ error: "Error retrieving contact", details: errorMessage });
       }
     }
   }

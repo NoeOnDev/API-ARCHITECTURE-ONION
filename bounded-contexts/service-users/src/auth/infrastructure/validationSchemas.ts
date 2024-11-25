@@ -14,6 +14,8 @@ export const registerUserSchema = Joi.object({
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/)
     .required(),
   role: Joi.string().trim().required(),
+  locality: Joi.string().trim().required(),
+  street: Joi.string().trim().required(),
 });
 
 export const loginUserSchema = Joi.object({

@@ -9,7 +9,11 @@ export class FindAllContactsController {
       const contacts = await this.findAllContacts.execute();
       res.json(contacts);
     } catch (error) {
-      res.status(500).send("Error retrieving contacts");
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      res
+        .status(500)
+        .json({ error: "Error retrieving contacts", details: errorMessage });
     }
   }
 }

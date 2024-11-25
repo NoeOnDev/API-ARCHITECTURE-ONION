@@ -21,7 +21,14 @@ export class UpdateContactDetailsController {
       if (error instanceof DomainError) {
         res.status(error.statusCode).json({ error: error.message });
       } else {
-        res.status(500).json({ error: "Failed to update contact details" });
+        const errorMessage =
+          error instanceof Error ? error.message : "Unknown error";
+        res
+          .status(500)
+          .json({
+            error: "Failed to update contact details",
+            details: errorMessage,
+          });
       }
     }
   }

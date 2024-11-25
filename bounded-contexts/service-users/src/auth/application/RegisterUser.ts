@@ -3,6 +3,7 @@ import { ContactRepository } from "../../contacts/domain/ContactRepository";
 import { User } from "../../users/domain/User";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { UserRole } from "../../users/domain/value-objects/UserRole";
+import { UserAddress } from "../../users/domain/value-objects/UserAddress";
 import { HashService } from "../domain/services/HashService";
 import { TokenService } from "../domain/services/TokenService";
 import { NotificationEvent } from "../../_shared/domain/events/NotificationEvent";
@@ -26,7 +27,9 @@ export class RegisterUser {
     contactId: string,
     username: string,
     password: string,
-    role: string
+    role: string,
+    locality: string,
+    street: string
   ): Promise<string> {
     const identifier = Identifier.fromString(contactId);
     const contact = await this.contactRepository.findById(identifier);
@@ -46,8 +49,9 @@ export class RegisterUser {
 
     const hashedPassword = await this.hashService.hash(password);
     const userRole = UserRole.fromValue(role);
+    const address = new UserAddress(locality, street);
 
-    const user = new User(username, hashedPassword, contact, userRole);
+    const user = new User(username, hashedPassword, contact, userRole, address);
     await this.userRepository.save(user);
 
     const eventType = EventType.USER_VERIFICATION;
