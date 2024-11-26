@@ -1,3 +1,5 @@
+import { InvalidReportStatusError } from "../../../_shared/domain/errors/InvalidReportStatusError";
+
 export class ReportStatus {
   private readonly value: "pending" | "resolved" | "unresolved";
 
@@ -18,7 +20,7 @@ export class ReportStatus {
       case "unresolved":
         return ReportStatus.UNRESOLVED;
       default:
-        throw new Error(`Invalid report status: ${value}`);
+        throw new InvalidReportStatusError(value);
     }
   }
 
