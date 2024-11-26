@@ -3,6 +3,7 @@ import {
   createReportController,
   findReportsByLocalityController,
   findReportsByUserIdController,
+  updateReportStatusController,
   jwtMiddleware,
 } from "../../dependencyInjection";
 
@@ -22,6 +23,11 @@ reportsRoutes.get(
   "/user",
   jwtMiddleware.handle.bind(jwtMiddleware),
   findReportsByUserIdController.handle.bind(findReportsByUserIdController)
+);
+reportsRoutes.patch(
+  "/status",
+  jwtMiddleware.handle.bind(jwtMiddleware),
+  updateReportStatusController.handle.bind(updateReportStatusController)
 );
 
 export default reportsRoutes;
