@@ -1,26 +1,23 @@
 import { Request, Response } from "express";
-import { CreateReport } from "../../../application/CreateReport";
+import { CreateNews } from "../../../application/CreateNews";
 import { DomainError } from "../../../../_shared/domain/errors/DomainError";
 
-export class CreateReportController {
-  constructor(private createReport: CreateReport) {}
+export class CreateNewsController {
+  constructor(private createNews: CreateNews) {}
 
   async handle(req: Request, res: Response): Promise<void> {
-    const { title, category, description, locality, street, createdAt } =
-      req.body;
+    const { title, description, createdAt } = req.body;
     const userId = req.user.id;
-
+    const locality = req.user.locality;
     try {
-      const report = await this.createReport.execute(
-        userId,
+      const news = await this.createNews.execute(
         title,
-        category,
         description,
         locality,
-        street,
+        userId,
         createdAt
       );
-      res.status(201).json(report);
+      res.status(201).json(news);
     } catch (error) {
       if (error instanceof DomainError) {
         res.status(error.statusCode).json({ error: error.message });
@@ -29,7 +26,7 @@ export class CreateReportController {
           error instanceof Error ? error.message : "Unknown error";
         res
           .status(500)
-          .json({ error: "Error creating report", details: errorMessage });
+          .json({ error: "Error creating news", details: errorMessage });
       }
     }
   }

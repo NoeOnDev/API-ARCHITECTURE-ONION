@@ -14,7 +14,8 @@ export class CreateReport {
     category: string,
     description: string,
     locality: string,
-    street: string
+    street: string,
+    createdAt: Date
   ): Promise<Report> {
     const identifier = Identifier.fromString(userId);
 
@@ -27,7 +28,8 @@ export class CreateReport {
       ReportCategory.fromString(category),
       description,
       new ReportAddress(locality, street),
-      identifier
+      identifier,
+      createdAt
     );
 
     await this.reportRepository.save(report);

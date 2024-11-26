@@ -16,8 +16,8 @@ export class PostgresReportRepository implements ReportRepository {
       row.description,
       new ReportAddress(row.locality, row.street),
       Identifier.fromString(row.user_id),
-      Identifier.fromString(row.id),
       row.created_at,
+      Identifier.fromString(row.id),
       ReportStatus.from(row.status)
     );
   }

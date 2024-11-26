@@ -56,19 +56,19 @@ export class PostgresAppointmentRepository implements AppointmentRepository {
   }
 
   async findByUserId(userId: Identifier): Promise<Appointment[]> {
-    const query = `SELECT * FROM appointments WHERE user_id = $1 ORDER BY date_time ASC`;
+    const query = `SELECT * FROM appointments WHERE user_id = $1 ORDER BY date_time DESC`;
     const result = await this.pool.query(query, [userId.getValue()]);
     return result.rows.map((row) => this.mapRowToAppointment(row));
   }
 
   async findByLocality(locality: string): Promise<Appointment[]> {
-    const query = `SELECT * FROM appointments WHERE locality = $1 ORDER BY date_time ASC`;
+    const query = `SELECT * FROM appointments WHERE locality = $1 ORDER BY date_time DESC`;
     const result = await this.pool.query(query, [locality]);
     return result.rows.map((row) => this.mapRowToAppointment(row));
   }
 
   async findByDateTimeRange(start: Date, end: Date): Promise<Appointment[]> {
-    const query = `SELECT * FROM appointments WHERE date_time BETWEEN $1 AND $2 ORDER BY date_time ASC`;
+    const query = `SELECT * FROM appointments WHERE date_time BETWEEN $1 AND $2 ORDER BY date_time DESC`;
     const result = await this.pool.query(query, [
       start.toISOString(),
       end.toISOString(),
