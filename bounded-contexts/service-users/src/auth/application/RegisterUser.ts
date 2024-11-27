@@ -12,6 +12,7 @@ import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { ContactNotFoundError } from "../../_shared/domain/errors/ContactNotFoundError";
 import { ContactAlreadyRegisteredError } from "../../_shared/domain/errors/ContactAlreadyRegisteredError";
 import { UsernameAlreadyExistsError } from "../../_shared/domain/errors/UsernameAlreadyExistsError";
+import { RepresentativeAlreadyExistsError } from "../../_shared/domain/errors/RepresentativeAlreadyExistsError";
 
 export class RegisterUser {
   constructor(
@@ -47,9 +48,23 @@ export class RegisterUser {
       throw new UsernameAlreadyExistsError();
     }
 
-    const hashedPassword = await this.hashService.hash(password);
     const userRole = UserRole.fromValue(role);
     const address = new UserAddress(locality, street);
+
+    if (userRole.equals(UserRole.REPRESENTATIVE)) {
+      const representativesInLocality =
+        await this.userRepository.findByRoleAndLocality(userRole, locality);
+
+      const verifiedRepresentative = representativesInLocality.find((rep) =>
+        rep.isVerified()
+      );
+
+      if (verifiedRepresentative) {
+        throw new RepresentativeAlreadyExistsError(locality);
+      }
+    }
+
+    const hashedPassword = await this.hashService.hash(password);
 
     const user = new User(username, hashedPassword, contact, userRole, address);
     await this.userRepository.save(user);

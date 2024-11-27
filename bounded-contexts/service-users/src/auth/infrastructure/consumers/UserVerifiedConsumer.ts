@@ -1,5 +1,6 @@
 import { Channel, ConsumeMessage } from "amqplib";
 import { VerifyUser } from "../../application/VerifyUser";
+import { RepresentativeAlreadyExistsError } from "../../../_shared/domain/errors/RepresentativeAlreadyExistsError";
 
 export class UserVerifiedConsumer {
   constructor(
@@ -23,8 +24,15 @@ export class UserVerifiedConsumer {
             console.log(`User verified successfully: userId=${userId}`);
             this.channel.ack(msg);
           } catch (error) {
-            console.error("Error processing user_verified event:", error);
-            this.channel.nack(msg, false, true);
+            if (error instanceof RepresentativeAlreadyExistsError) {
+              console.warn(
+                `Conflict: Another representative already verified in locality. Skipping userId=${error.message}`
+              );
+              this.channel.ack(msg);
+            } else {
+              console.error("Error processing user_verified event:", error);
+              this.channel.nack(msg, false, true);
+            }
           }
         }
       },

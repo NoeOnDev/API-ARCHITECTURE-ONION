@@ -117,4 +117,19 @@ export class PostgresUserRepository implements UserRepository {
     }
     return this.mapRowToUser(result.rows[0]);
   }
+
+  async findByRoleAndLocality(
+    role: UserRole,
+    locality: string
+  ): Promise<User[]> {
+    const query = `
+      SELECT u.*, c.first_name, c.last_name, c.email, c.phone, c.status, c.hobby
+      FROM users u
+      JOIN contacts c ON u.contact_id = c.id
+      WHERE u.role = $1 AND u.locality = $2
+    `;
+    const result = await this.pool.query(query, [role.getValue(), locality]);
+
+    return result.rows.map((row) => this.mapRowToUser(row));
+  }
 }

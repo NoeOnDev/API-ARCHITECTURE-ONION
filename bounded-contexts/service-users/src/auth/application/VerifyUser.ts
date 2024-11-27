@@ -5,6 +5,8 @@ import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { EventType } from "../../_shared/domain/value-objects/EventType";
 import { EventMessageProvider } from "../domain/EventMessageProvider";
 import { UserNotFoundError } from "../../_shared/domain/errors/UserNotFoundError";
+import { RepresentativeAlreadyExistsError } from "../../_shared/domain/errors/RepresentativeAlreadyExistsError";
+import { UserRole } from "../../users/domain/value-objects/UserRole";
 
 export class VerifyUser {
   constructor(
@@ -19,6 +21,25 @@ export class VerifyUser {
     const user = await this.userRepository.findById(identifier);
     if (!user) {
       throw new UserNotFoundError();
+    }
+
+    const userRole = user.getRole();
+
+    if (userRole.equals(UserRole.REPRESENTATIVE)) {
+      const representativesInLocality =
+        await this.userRepository.findByRoleAndLocality(
+          userRole,
+          user.getAddress().getLocality()
+        );
+
+      const verifiedRepresentative = representativesInLocality.find((rep) =>
+        rep.isVerified()
+      );
+      if (verifiedRepresentative) {
+        throw new RepresentativeAlreadyExistsError(
+          user.getAddress().getLocality()
+        );
+      }
     }
 
     user.verifyUser();
