@@ -6,12 +6,18 @@ import {
   updateReportStatusController,
   jwtMiddleware,
 } from "../../dependencyInjection";
+import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
+import {
+  createReportSchema,
+  updateReportStatusSchema,
+} from "../../validationSchemas";
 
 const reportsRoutes = Router();
 
 reportsRoutes.post(
   "/",
   jwtMiddleware.handle.bind(jwtMiddleware),
+  validateRequest(createReportSchema),
   createReportController.handle.bind(createReportController)
 );
 reportsRoutes.get(
@@ -27,6 +33,7 @@ reportsRoutes.get(
 reportsRoutes.patch(
   "/status",
   jwtMiddleware.handle.bind(jwtMiddleware),
+  validateRequest(updateReportStatusSchema),
   updateReportStatusController.handle.bind(updateReportStatusController)
 );
 

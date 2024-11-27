@@ -6,12 +6,18 @@ import {
   updateAppointmentStatusController,
   jwtMiddleware,
 } from "../../dependencyInjection";
+import { validateRequest } from "../../../../_shared/infrastructure/middlewares/validationMiddleware";
+import {
+  createAppointmentSchema,
+  updateAppointmentStatusSchema,
+} from "../../validationSchemas";
 
 const appointmentsRoutes = Router();
 
 appointmentsRoutes.post(
   "/",
   jwtMiddleware.handle.bind(jwtMiddleware),
+  validateRequest(createAppointmentSchema),
   createAppointmentController.handle.bind(createAppointmentController)
 );
 
@@ -34,6 +40,7 @@ appointmentsRoutes.get(
 appointmentsRoutes.patch(
   "/status",
   jwtMiddleware.handle.bind(jwtMiddleware),
+  validateRequest(updateAppointmentStatusSchema),
   updateAppointmentStatusController.handle.bind(
     updateAppointmentStatusController
   )

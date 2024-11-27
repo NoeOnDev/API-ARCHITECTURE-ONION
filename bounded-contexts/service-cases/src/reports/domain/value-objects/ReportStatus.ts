@@ -1,23 +1,23 @@
 import { InvalidReportStatusError } from "../../../_shared/domain/errors/InvalidReportStatusError";
 
 export class ReportStatus {
-  private readonly value: "pending" | "resolved" | "unresolved";
+  private readonly value: "PENDING" | "RESOLVED" | "UNRESOLVED";
 
-  private constructor(value: "pending" | "resolved" | "unresolved") {
+  private constructor(value: "PENDING" | "RESOLVED" | "UNRESOLVED") {
     this.value = value;
   }
 
-  static PENDING = new ReportStatus("pending");
-  static RESOLVED = new ReportStatus("resolved");
-  static UNRESOLVED = new ReportStatus("unresolved");
+  static PENDING = new ReportStatus("PENDING");
+  static RESOLVED = new ReportStatus("RESOLVED");
+  static UNRESOLVED = new ReportStatus("UNRESOLVED");
 
   static from(value: string): ReportStatus {
     switch (value) {
-      case "pending":
+      case "PENDING":
         return ReportStatus.PENDING;
-      case "resolved":
+      case "RESOLVED":
         return ReportStatus.RESOLVED;
-      case "unresolved":
+      case "UNRESOLVED":
         return ReportStatus.UNRESOLVED;
       default:
         throw new InvalidReportStatusError(value);
@@ -25,18 +25,18 @@ export class ReportStatus {
   }
 
   isPending(): boolean {
-    return this.value === "pending";
+    return this.value === "PENDING";
   }
 
   isResolved(): boolean {
-    return this.value === "resolved";
+    return this.value === "RESOLVED";
   }
 
   isUnresolved(): boolean {
-    return this.value === "unresolved";
+    return this.value === "UNRESOLVED";
   }
 
-  getValue(): "pending" | "resolved" | "unresolved" {
+  getValue(): "PENDING" | "RESOLVED" | "UNRESOLVED" {
     return this.value;
   }
 }
