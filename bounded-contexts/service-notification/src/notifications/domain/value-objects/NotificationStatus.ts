@@ -1,3 +1,5 @@
+import { InvalidNotificationStatusError } from "../../../_shared/domain/errors/InvalidNotificationStatusError";
+
 export class NotificationStatus {
   private readonly value: "PENDING" | "SENT" | "FAILED";
 
@@ -18,7 +20,7 @@ export class NotificationStatus {
       case "FAILED":
         return NotificationStatus.FAILED;
       default:
-        throw new Error(`Invalid notification status: ${value}`);
+        throw new InvalidNotificationStatusError(value);
     }
   }
 

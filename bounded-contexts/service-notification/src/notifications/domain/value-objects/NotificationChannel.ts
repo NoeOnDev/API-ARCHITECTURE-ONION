@@ -1,3 +1,5 @@
+import { UnsupportedNotificationChannelError } from "../../../_shared/domain/errors/UnsupportedNotificationChannelError";
+
 export class NotificationChannel {
   private readonly value: "EMAIL" | "WHATSAPP";
 
@@ -15,7 +17,7 @@ export class NotificationChannel {
       case "WHATSAPP":
         return NotificationChannel.WHATSAPP;
       default:
-        throw new Error(`Invalid notification channel: ${value}`);
+        throw new UnsupportedNotificationChannelError(value);
     }
   }
 
