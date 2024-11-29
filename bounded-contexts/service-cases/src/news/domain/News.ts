@@ -1,4 +1,5 @@
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { TextProcessingStatus } from "../../_shared/domain/value-objects/TextProcessingStatus";
 
 export class News {
   private id: Identifier;
@@ -7,6 +8,7 @@ export class News {
   private locality: string;
   private userId: Identifier;
   private createdAt: Date;
+  private processingStatus: TextProcessingStatus;
 
   constructor(
     title: string,
@@ -14,6 +16,7 @@ export class News {
     locality: string,
     userId: Identifier,
     createdAt: Date,
+    processingStatus: TextProcessingStatus = TextProcessingStatus.PENDING,
     id?: Identifier
   ) {
     this.id = id || Identifier.create();
@@ -22,6 +25,7 @@ export class News {
     this.locality = locality.trim();
     this.userId = userId;
     this.createdAt = createdAt;
+    this.processingStatus = processingStatus;
   }
 
   getId(): Identifier {
@@ -46,5 +50,13 @@ export class News {
 
   getCreatedAt(): Date {
     return this.createdAt;
+  }
+
+  getProcessingStatus(): TextProcessingStatus {
+    return this.processingStatus;
+  }
+
+  setProcessingStatus(processingStatus: TextProcessingStatus): void {
+    this.processingStatus = processingStatus;
   }
 }

@@ -15,13 +15,15 @@ import { UpdateReportStatusController } from "../infrastructure/http/controllers
 import { JwtMiddleware } from "../../_shared/infrastructure/middlewares/JwtMiddleware";
 import { JwtTokenService } from "./services/JwtTokenService";
 
+import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
+
 const jwtTokenService = new JwtTokenService();
 
 const jwtMiddleware = new JwtMiddleware(jwtTokenService);
 
 const reportRepository = new PostgresReportRepository(pool);
 
-const createReport = new CreateReport(reportRepository);
+const createReport = new CreateReport(reportRepository, rabbitmqEventPublisher);
 const findReportsByLocality = new FindReportsByLocality(reportRepository);
 const findReportsByUserId = new FindReportsByUserId(reportRepository);
 const updateReportStatus = new UpdateReportStatus(reportRepository);

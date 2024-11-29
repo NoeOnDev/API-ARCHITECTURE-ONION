@@ -1,27 +1,20 @@
-import { NotificationEvent } from "../../domain/events/NotificationEvent";
+import { TextMiningEvent } from "../../domain/events/TextMiningEvent";
 import { createRabbitMQChannel } from "../../../_config/rabbitmq.config";
 
 export async function rabbitmqEventPublisher(
-  event: NotificationEvent
+  event: TextMiningEvent
 ): Promise<void> {
   const channel = await createRabbitMQChannel();
   const eventPayload = {
-    identifier: event.identifier.getValue(),
-    recipientType: event.recipientType,
-    email: event.email,
-    phone: event.phone,
-    message: event.message,
-    channel: event.channel,
-    type: event.type,
-    eventType: event.eventType.getValue(),
+    entityId: event.entityId.getValue(),
+    entityType: event.entityType,
+    description: event.description,
   };
 
-  await channel.assertQueue("service_notification", { durable: true });
+  await channel.assertQueue("text_mining_service", { durable: true });
   channel.sendToQueue(
-    "service_notification",
+    "text_mining_service",
     Buffer.from(JSON.stringify(eventPayload)),
-    {
-      persistent: true,
-    }
+    { persistent: true }
   );
 }

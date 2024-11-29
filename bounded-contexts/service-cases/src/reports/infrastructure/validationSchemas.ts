@@ -11,5 +11,5 @@ export const createReportSchema = Joi.object({
 
 export const updateReportStatusSchema = Joi.object({
   reportId: Joi.string().uuid().required(),
-  status: Joi.string().trim().required,
+  status: Joi.string().trim().required(),
 });

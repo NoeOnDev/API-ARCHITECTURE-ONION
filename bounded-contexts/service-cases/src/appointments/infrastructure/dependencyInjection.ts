@@ -15,12 +15,17 @@ import { UpdateAppointmentStatusController } from "./http/controllers/UpdateAppo
 import { JwtMiddleware } from "../../_shared/infrastructure/middlewares/JwtMiddleware";
 import { JwtTokenService } from "../../reports/infrastructure/services/JwtTokenService";
 
+import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
+
 const jwtTokenService = new JwtTokenService();
 const jwtMiddleware = new JwtMiddleware(jwtTokenService);
 
 const appointmentRepository = new PostgresAppointmentRepository(pool);
 
-const createAppointment = new CreateAppointment(appointmentRepository);
+const createAppointment = new CreateAppointment(
+  appointmentRepository,
+  rabbitmqEventPublisher
+);
 const findAppointmentsByUserId = new FindAppointmentsByUserId(
   appointmentRepository
 );

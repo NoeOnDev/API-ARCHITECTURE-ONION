@@ -3,6 +3,7 @@ import { Appointment } from "../../domain/Appointment";
 import { AppointmentRepository } from "../../domain/AppointmentRepository";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
 import { AppointmentStatus } from "../../domain/value-objects/AppointmentStatus";
+import { TextProcessingStatus } from "../../../_shared/domain/value-objects/TextProcessingStatus";
 
 export class PostgresAppointmentRepository implements AppointmentRepository {
   constructor(private pool: Pool) {}
@@ -16,14 +17,15 @@ export class PostgresAppointmentRepository implements AppointmentRepository {
       new Date(row.date_time),
       row.locality,
       AppointmentStatus.fromValue(row.status),
+      TextProcessingStatus.from(row.processing_status),
       Identifier.fromString(row.id)
     );
   }
 
   async save(appointment: Appointment): Promise<void> {
     const query = `
-      INSERT INTO appointments (id, title, user_name, user_id, description, date_time, locality, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO appointments (id, title, user_name, user_id, description, date_time, locality, status, processing_status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       ON CONFLICT (id) DO UPDATE
       SET title = EXCLUDED.title,
           user_name = EXCLUDED.user_name,
@@ -31,7 +33,8 @@ export class PostgresAppointmentRepository implements AppointmentRepository {
           description = EXCLUDED.description,
           date_time = EXCLUDED.date_time,
           locality = EXCLUDED.locality,
-          status = EXCLUDED.status;
+          status = EXCLUDED.status,
+          processing_status = EXCLUDED.processing_status;
     `;
     const values = [
       appointment.getId().getValue(),
@@ -42,6 +45,7 @@ export class PostgresAppointmentRepository implements AppointmentRepository {
       appointment.getDateTime().toISOString(),
       appointment.getLocality(),
       appointment.getStatus().getValue(),
+      appointment.getProcessingStatus().getValue(),
     ];
     await this.pool.query(query, values);
   }

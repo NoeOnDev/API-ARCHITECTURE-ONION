@@ -13,12 +13,14 @@ import { FindNewsByLocalityController } from "./http/controllers/FindNewsByLocal
 import { JwtTokenService } from "../../reports/infrastructure/services/JwtTokenService";
 import { JwtMiddleware } from "../../_shared/infrastructure/middlewares/JwtMiddleware";
 
+import { rabbitmqEventPublisher } from "../../_shared/infrastructure/eventPublishers/rabbitmqEventPublisher";
+
 const tokenService = new JwtTokenService();
 const jwtMiddleware = new JwtMiddleware(tokenService);
 
 const newsRepository = new PostgresNewsRepository(pool);
 
-const createNews = new CreateNews(newsRepository);
+const createNews = new CreateNews(newsRepository, rabbitmqEventPublisher);
 const findNewsByUserId = new FindNewsByUserId(newsRepository);
 const findNewsByLocality = new FindNewsByLocality(newsRepository);
 

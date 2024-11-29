@@ -2,6 +2,7 @@ import { Pool } from "pg";
 import { News } from "../../domain/News";
 import { NewsRepository } from "../../domain/NewsRepository";
 import { Identifier } from "../../../_shared/domain/value-objects/Identifier";
+import { TextProcessingStatus } from "../../../_shared/domain/value-objects/TextProcessingStatus";
 
 export class PostgresNewsRepository implements NewsRepository {
   constructor(private pool: Pool) {}
@@ -13,20 +14,22 @@ export class PostgresNewsRepository implements NewsRepository {
       row.locality,
       Identifier.fromString(row.user_id),
       new Date(row.created_at),
+      TextProcessingStatus.from(row.processing_status),
       Identifier.fromString(row.id)
     );
   }
 
   async save(news: News): Promise<void> {
     const query = `
-      INSERT INTO news (id, title, description, locality, user_id, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6)
+      INSERT INTO news (id, title, description, locality, user_id, created_at, processing_status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       ON CONFLICT (id) DO UPDATE
       SET title = EXCLUDED.title,
           description = EXCLUDED.description,
           locality = EXCLUDED.locality,
           user_id = EXCLUDED.user_id,
-          created_at = EXCLUDED.created_at;
+          created_at = EXCLUDED.created_at,
+          processing_status = EXCLUDED.processing_status;
     `;
     const values = [
       news.getId().getValue(),
@@ -35,6 +38,7 @@ export class PostgresNewsRepository implements NewsRepository {
       news.getLocality(),
       news.getUserId().getValue(),
       news.getCreatedAt(),
+      news.getProcessingStatus().getValue(),
     ];
     await this.pool.query(query, values);
   }

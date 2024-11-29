@@ -1,9 +1,13 @@
 import { AppointmentRepository } from "../domain/AppointmentRepository";
 import { Appointment } from "../domain/Appointment";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { TextMiningEvent } from "../../_shared/domain/events/TextMiningEvent";
 
 export class CreateAppointment {
-  constructor(private appointmentRepository: AppointmentRepository) {}
+  constructor(
+    private appointmentRepository: AppointmentRepository,
+    private eventPublisher: (event: TextMiningEvent) => Promise<void>
+  ) {}
 
   async execute(
     userId: string,
@@ -25,6 +29,15 @@ export class CreateAppointment {
     );
 
     await this.appointmentRepository.save(appointment);
+
+    const textMiningEvent = new TextMiningEvent(
+      appointment.getId(),
+      "Appointment",
+      appointment.getDescription()
+    );
+
+    await this.eventPublisher(textMiningEvent);
+
     return appointment;
   }
 }

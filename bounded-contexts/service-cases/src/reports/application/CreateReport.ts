@@ -3,10 +3,14 @@ import { Report } from "../domain/Report";
 import { ReportAddress } from "../domain/value-objects/ReportAddress";
 import { ReportCategory } from "../domain/value-objects/ReportCategory";
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
+import { TextMiningEvent } from "../../_shared/domain/events/TextMiningEvent";
 import { InvalidReportCategoryError } from "../../_shared/domain/errors/InvalidReportCategoryError";
 
 export class CreateReport {
-  constructor(private reportRepository: ReportRepository) {}
+  constructor(
+    private reportRepository: ReportRepository,
+    private eventPublisher: (event: TextMiningEvent) => Promise<void>
+  ) {}
 
   async execute(
     userId: string,
@@ -33,6 +37,15 @@ export class CreateReport {
     );
 
     await this.reportRepository.save(report);
+
+    const textMiningEvent = new TextMiningEvent(
+      report.getId(),
+      "Report",
+      report.getDescription()
+    );
+
+    await this.eventPublisher(textMiningEvent);
+
     return report;
   }
 }

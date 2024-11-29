@@ -1,5 +1,6 @@
 import { Identifier } from "../../_shared/domain/value-objects/Identifier";
 import { AppointmentStatus } from "./value-objects/AppointmentStatus";
+import { TextProcessingStatus } from "../../_shared/domain/value-objects/TextProcessingStatus";
 
 export class Appointment {
   private id: Identifier;
@@ -10,6 +11,7 @@ export class Appointment {
   private dateTime: Date;
   private locality: string;
   private status: AppointmentStatus;
+  private processingStatus: TextProcessingStatus;
 
   constructor(
     title: string,
@@ -19,6 +21,7 @@ export class Appointment {
     dateTime: Date,
     locality: string,
     status: AppointmentStatus = AppointmentStatus.PENDING,
+    processingStatus: TextProcessingStatus = TextProcessingStatus.PENDING,
     id?: Identifier
   ) {
     this.id = id || Identifier.create();
@@ -29,6 +32,7 @@ export class Appointment {
     this.dateTime = dateTime;
     this.locality = locality.trim();
     this.status = status;
+    this.processingStatus = processingStatus;
   }
 
   getId(): Identifier {
@@ -63,8 +67,16 @@ export class Appointment {
     return this.status;
   }
 
+  getProcessingStatus(): TextProcessingStatus {
+    return this.processingStatus;
+  }
+
   setStatus(status: AppointmentStatus): void {
     this.status = status;
+  }
+
+  setProcessingStatus(processingStatus: TextProcessingStatus): void {
+    this.processingStatus = processingStatus;
   }
 
   accept(): void {
