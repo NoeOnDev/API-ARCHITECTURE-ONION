@@ -5,6 +5,7 @@ import { connectWithRetry } from "./_helpers/dbConnection";
 import reportsRoutes from "./reports/infrastructure/http/routes/reportsRoutes";
 import appointmentsRoutes from "./appointments/infrastructure/http/routes/appointmentsRoutes";
 import newsRoutes from "./news/infrastructure/http/routes/newsRoutes";
+import { initializeConsumers } from "./_helpers/initializeConsumers";
 
 const app = express();
 const port = env.port.PORT;
@@ -17,6 +18,7 @@ app.use("/appointments", appointmentsRoutes);
 app.use("/news", newsRoutes);
 
 connectWithRetry(10, 10000, () => {
+  initializeConsumers();
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port} 🚀`);
   });

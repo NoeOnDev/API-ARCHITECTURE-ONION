@@ -12,10 +12,14 @@ def analyze_word(word, model, threshold, toxic_labels):
         return CACHE[word]
 
     results = model.predict(word)
-    print(f"Resultados para '{word}':", results)
+    print(f"Results for '{word}':", results)
     is_toxic = any(results.get(label, 0) >= threshold for label in toxic_labels)
 
-    CACHE[word] = "***" if is_toxic else word
+    if is_toxic:
+        CACHE[word] = '*' * len(word)
+    else:
+        CACHE[word] = word
+    
     return CACHE[word]
 
 def censor_text(text, model_name="multilingual", threshold=0.5):
@@ -31,7 +35,7 @@ def censor_text(text, model_name="multilingual", threshold=0.5):
             continue
 
         results = detoxify_model.predict(fragment)
-        print(f"Resultados para '{fragment}':", results)
+        print(f"Results for '{fragment}':", results)
 
         if any(results.get(label, 0) >= threshold for label in toxic_labels):
             if len(fragment.split()) == 1:
@@ -47,9 +51,3 @@ def censor_text(text, model_name="multilingual", threshold=0.5):
             censored_fragments.append(fragment)
 
     return "".join(censored_fragments)
-
-input_text = (
-    "El contenedor de basura esta sucio, debería limpiarlo."
-)
-censored_text = censor_text(input_text, model_name="multilingual", threshold=0.7)
-print("Texto censurado:", censored_text)

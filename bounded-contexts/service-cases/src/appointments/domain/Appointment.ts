@@ -71,6 +71,10 @@ export class Appointment {
     return this.processingStatus;
   }
 
+  setDescription(description: string): void {
+    this.description = description.trim();
+  }
+
   setStatus(status: AppointmentStatus): void {
     this.status = status;
   }

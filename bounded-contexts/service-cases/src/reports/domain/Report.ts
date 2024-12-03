@@ -73,6 +73,10 @@ export class Report {
     return this.processingStatus;
   }
 
+  setDescription(description: string): void {
+    this.description = description;
+  }
+
   setStatus(status: ReportStatus): void {
     this.status = status;
   }

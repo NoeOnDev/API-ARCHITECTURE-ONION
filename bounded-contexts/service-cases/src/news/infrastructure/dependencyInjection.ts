@@ -5,6 +5,7 @@ import { PostgresNewsRepository } from "./persistence/PostgresNewsRepository";
 import { CreateNews } from "../application/CreateNews";
 import { FindNewsByUserId } from "../application/FindNewsByUserId";
 import { FindNewsByLocality } from "../application/FindNewsByLocality";
+import { UpdateNewsDescription } from "../application/UpdateNewsDescription";
 
 import { CreateNewsController } from "./http/controllers/CreateNewsController";
 import { FindNewsByUserIdController } from "./http/controllers/FindNewsByUserIdController";
@@ -23,6 +24,7 @@ const newsRepository = new PostgresNewsRepository(pool);
 const createNews = new CreateNews(newsRepository, rabbitmqEventPublisher);
 const findNewsByUserId = new FindNewsByUserId(newsRepository);
 const findNewsByLocality = new FindNewsByLocality(newsRepository);
+const updateNewsDescription = new UpdateNewsDescription(newsRepository);
 
 const createNewsController = new CreateNewsController(createNews);
 const findNewsByUserIdController = new FindNewsByUserIdController(
@@ -33,6 +35,7 @@ const findNewsByLocalityController = new FindNewsByLocalityController(
 );
 
 export {
+  updateNewsDescription,
   createNewsController,
   findNewsByUserIdController,
   findNewsByLocalityController,

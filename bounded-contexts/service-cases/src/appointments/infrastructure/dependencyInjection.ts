@@ -6,6 +6,7 @@ import { CreateAppointment } from "../application/CreateAppointment";
 import { FindAppointmentsByUserId } from "../application/FindAppointmentsByUserId";
 import { FindAppointmentsByLocality } from "../application/FindAppointmentsByLocality";
 import { UpdateAppointmentStatus } from "../application/UpdateAppointmentStatus";
+import { UpdateAppointmentDescription } from "../application/UpdateAppointmentDescription";
 
 import { CreateAppointmentController } from "./http/controllers/CreateAppointmentController";
 import { FindAppointmentsByUserIdController } from "./http/controllers/FindAppointmentsByUserIdController";
@@ -35,6 +36,9 @@ const findAppointmentsByLocality = new FindAppointmentsByLocality(
 const updateAppointmentStatus = new UpdateAppointmentStatus(
   appointmentRepository
 );
+const updateAppointmentDescription = new UpdateAppointmentDescription(
+  appointmentRepository
+);
 
 const createAppointmentController = new CreateAppointmentController(
   createAppointment
@@ -48,6 +52,7 @@ const updateAppointmentStatusController = new UpdateAppointmentStatusController(
 );
 
 export {
+  updateAppointmentDescription,
   createAppointmentController,
   findAppointmentsByUserIdController,
   findAppointmentsByLocalityController,

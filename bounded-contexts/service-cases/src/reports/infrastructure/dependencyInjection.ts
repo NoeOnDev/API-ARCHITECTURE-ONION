@@ -6,6 +6,7 @@ import { CreateReport } from "../application/CreateReport";
 import { FindReportsByLocality } from "../application/FindReportsByLocality";
 import { FindReportsByUserId } from "../application/FindReportsByUserId";
 import { UpdateReportStatus } from "../application/UpdateReportStatus";
+import { UpdateReportDescription } from "../application/UpdateReportDescription";
 
 import { CreateReportController } from "../infrastructure/http/controllers/CreateReportController";
 import { FindReportsByLocalityController } from "../infrastructure/http/controllers/FindReportsByLocalityController";
@@ -27,6 +28,7 @@ const createReport = new CreateReport(reportRepository, rabbitmqEventPublisher);
 const findReportsByLocality = new FindReportsByLocality(reportRepository);
 const findReportsByUserId = new FindReportsByUserId(reportRepository);
 const updateReportStatus = new UpdateReportStatus(reportRepository);
+const updateReportDescription = new UpdateReportDescription(reportRepository);
 
 const createReportController = new CreateReportController(createReport);
 const findReportsByLocalityController = new FindReportsByLocalityController(
@@ -40,6 +42,7 @@ const updateReportStatusController = new UpdateReportStatusController(
 );
 
 export {
+  updateReportDescription,
   createReportController,
   findReportsByLocalityController,
   findReportsByUserIdController,
