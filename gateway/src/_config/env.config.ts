@@ -5,9 +5,6 @@ config();
 
 const envSchema = Joi.object({
   PORT: Joi.number().required(),
-  JWT_SECRET: Joi.string().required(),
-  JWT_EXPIRATION: Joi.string().required(),
-  JWT_EXPIRATION_TEMP: Joi.string().required(),
   USERS_SERVICE_URL: Joi.string().uri().required(),
   NOTIFICATIONS_SERVICE_URL: Joi.string().uri().required(),
   CASES_SERVICE_URL: Joi.string().uri().required(),
@@ -22,9 +19,6 @@ if (error) {
 
 const {
   PORT,
-  JWT_SECRET,
-  JWT_EXPIRATION,
-  JWT_EXPIRATION_TEMP,
   USERS_SERVICE_URL,
   NOTIFICATIONS_SERVICE_URL,
   CASES_SERVICE_URL,
@@ -34,11 +28,6 @@ const {
 interface Env {
   port: {
     PORT: number;
-  };
-  jwt: {
-    JWT_SECRET: string;
-    JWT_EXPIRATION: string;
-    JWT_EXPIRATION_TEMP: string;
   };
   services: {
     USERS_SERVICE_URL: string;
@@ -51,11 +40,6 @@ interface Env {
 export const env: Env = {
   port: {
     PORT: PORT,
-  },
-  jwt: {
-    JWT_SECRET: JWT_SECRET,
-    JWT_EXPIRATION: JWT_EXPIRATION,
-    JWT_EXPIRATION_TEMP: JWT_EXPIRATION_TEMP,
   },
   services: {
     USERS_SERVICE_URL: USERS_SERVICE_URL,

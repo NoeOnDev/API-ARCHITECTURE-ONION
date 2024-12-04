@@ -9,6 +9,7 @@ export class CreateReportController {
     const { title, category, description, locality, street, createdAt } =
       req.body;
     const userId = req.user.id;
+    const userLocality = req.user.locality;
 
     try {
       const report = await this.createReport.execute(
@@ -18,6 +19,7 @@ export class CreateReportController {
         description,
         locality,
         street,
+        userLocality,
         createdAt
       );
       res.status(201).json(report);

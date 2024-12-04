@@ -17,6 +17,7 @@ export class PostgresReportRepository implements ReportRepository {
       row.description,
       new ReportAddress(row.locality, row.street),
       Identifier.fromString(row.user_id),
+      row.user_locality,
       row.created_at,
       Identifier.fromString(row.id),
       ReportStatus.from(row.status),
@@ -26,8 +27,8 @@ export class PostgresReportRepository implements ReportRepository {
 
   async save(report: Report): Promise<void> {
     const query = `
-      INSERT INTO reports (id, title, category, description, locality, street, user_id, created_at, status, processing_status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      INSERT INTO reports (id, title, category, description, locality, street, user_id, user_locality, created_at, status, processing_status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       ON CONFLICT (id) DO UPDATE
       SET title = EXCLUDED.title,
           category = EXCLUDED.category,
@@ -35,6 +36,7 @@ export class PostgresReportRepository implements ReportRepository {
           locality = EXCLUDED.locality,
           street = EXCLUDED.street,
           user_id = EXCLUDED.user_id,
+          user_locality = EXCLUDED.user_locality,
           created_at = EXCLUDED.created_at,
           status = EXCLUDED.status,
           processing_status = EXCLUDED.processing_status;
@@ -47,6 +49,7 @@ export class PostgresReportRepository implements ReportRepository {
       report.getAddress().getLocality(),
       report.getAddress().getStreet(),
       report.getUserId().getValue(),
+      report.getUserLocality(),
       report.getCreatedAt(),
       report.getStatus().getValue(),
       report.getProcessingStatus().getValue(),
@@ -70,7 +73,11 @@ export class PostgresReportRepository implements ReportRepository {
   }
 
   async findByLocality(locality: string): Promise<Report[]> {
-    const query = `SELECT * FROM reports WHERE locality = $1 ORDER BY created_at DESC`;
+    const query = `
+      SELECT * FROM reports 
+      WHERE locality = $1 OR user_locality = $1 
+      ORDER BY created_at DESC
+    `;
     const result = await this.pool.query(query, [locality]);
     return result.rows.map((row) => this.mapRowToReport(row));
   }

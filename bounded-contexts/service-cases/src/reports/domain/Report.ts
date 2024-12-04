@@ -11,6 +11,7 @@ export class Report {
   private description: string;
   private address: ReportAddress;
   private userId: Identifier;
+  private userLocality: string;
   private createdAt: Date;
   private status: ReportStatus;
   private processingStatus: TextProcessingStatus;
@@ -21,6 +22,7 @@ export class Report {
     description: string,
     address: ReportAddress,
     userId: Identifier,
+    userLocality: string,
     createdAt: Date,
     id?: Identifier,
     status: ReportStatus = ReportStatus.PENDING,
@@ -32,6 +34,7 @@ export class Report {
     this.description = description.trim();
     this.address = address;
     this.userId = userId;
+    this.userLocality = userLocality;
     this.createdAt = createdAt;
     this.status = status;
     this.processingStatus = processingStatus;
@@ -59,6 +62,10 @@ export class Report {
 
   getUserId(): Identifier {
     return this.userId;
+  }
+
+  getUserLocality(): string {
+    return this.userLocality;
   }
 
   getCreatedAt(): Date {

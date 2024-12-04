@@ -19,6 +19,7 @@ export class CreateReport {
     description: string,
     locality: string,
     street: string,
+    userLocality: string,
     createdAt: Date
   ): Promise<Report> {
     const identifier = Identifier.fromString(userId);
@@ -33,6 +34,7 @@ export class CreateReport {
       description,
       new ReportAddress(locality, street),
       identifier,
+      userLocality,
       createdAt
     );
 
