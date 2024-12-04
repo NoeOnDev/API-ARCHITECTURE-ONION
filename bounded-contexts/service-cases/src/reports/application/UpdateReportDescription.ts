@@ -5,7 +5,7 @@ import { NoReportsFoundError } from "../../_shared/domain/errors/NoReportsFoundE
 export class UpdateReportDescription {
   constructor(private reportRepository: ReportRepository) {}
 
-  async execute(reportId: string, newDescription: string): Promise<void> {
+  async execute(reportId: string, newTitle: string, newDescription: string): Promise<void> {
     const identifier = Identifier.fromString(reportId);
     const report = await this.reportRepository.findById(identifier);
 
@@ -13,7 +13,8 @@ export class UpdateReportDescription {
       throw new NoReportsFoundError(reportId);
     }
 
-    report.setDescription(newDescription.trim());
+    report.setTitle(newTitle);
+    report.setDescription(newDescription);
     await this.reportRepository.save(report);
   }
 }

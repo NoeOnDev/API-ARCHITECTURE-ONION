@@ -33,6 +33,7 @@ export class CreateAppointment {
     const textMiningEvent = new TextMiningEvent(
       appointment.getId(),
       "Appointment",
+      appointment.getTitle(),
       appointment.getDescription()
     );
 

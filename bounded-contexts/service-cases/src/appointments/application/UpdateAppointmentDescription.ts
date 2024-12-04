@@ -5,7 +5,11 @@ import { NoAppointmentsFoundError } from "../../_shared/domain/errors/NoAppointm
 export class UpdateAppointmentDescription {
   constructor(private appointmentRepository: AppointmentRepository) {}
 
-  async execute(appointmentId: string, newDescription: string): Promise<void> {
+  async execute(
+    appointmentId: string,
+    newTitle: string,
+    newDescription: string
+  ): Promise<void> {
     const identifier = Identifier.fromString(appointmentId);
     const appointment = await this.appointmentRepository.findById(identifier);
 
@@ -13,7 +17,8 @@ export class UpdateAppointmentDescription {
       throw new NoAppointmentsFoundError(appointmentId);
     }
 
-    appointment.setDescription(newDescription.trim());
+    appointment.setTitle(newTitle);
+    appointment.setDescription(newDescription);
     await this.appointmentRepository.save(appointment);
   }
 }

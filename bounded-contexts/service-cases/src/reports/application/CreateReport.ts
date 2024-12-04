@@ -43,6 +43,7 @@ export class CreateReport {
     const textMiningEvent = new TextMiningEvent(
       report.getId(),
       "Report",
+      report.getTitle(),
       report.getDescription()
     );
 

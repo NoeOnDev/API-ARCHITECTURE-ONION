@@ -56,6 +56,10 @@ export class News {
     return this.processingStatus;
   }
 
+  setTitle(title: string): void {
+    this.title = title;
+  }
+
   setDescription(description: string): void {
     this.description = description;
   }

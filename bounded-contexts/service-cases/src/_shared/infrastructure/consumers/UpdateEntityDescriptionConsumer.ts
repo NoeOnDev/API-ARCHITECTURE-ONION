@@ -22,7 +22,7 @@ export class UpdateEntityDescriptionConsumer {
       async (msg: ConsumeMessage | null) => {
         if (msg) {
           try {
-            const { entityId, entityType, description } = JSON.parse(
+            const { entityId, entityType, title, description } = JSON.parse(
               msg.content.toString()
             );
 
@@ -30,17 +30,23 @@ export class UpdateEntityDescriptionConsumer {
               case "Report":
                 await this.updateReportDescription.execute(
                   entityId,
+                  title,
                   description
                 );
                 break;
               case "Appointment":
                 await this.updateAppointmentDescription.execute(
                   entityId,
+                  title,
                   description
                 );
                 break;
               case "News":
-                await this.updateNewsDescription.execute(entityId, description);
+                await this.updateNewsDescription.execute(
+                  entityId,
+                  title,
+                  description
+                );
                 break;
               default:
                 throw new Error(`Unsupported entityType: ${entityType}`);

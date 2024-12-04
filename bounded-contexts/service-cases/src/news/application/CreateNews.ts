@@ -31,6 +31,7 @@ export class CreateNews {
     const textMiningEvent = new TextMiningEvent(
       news.getId(),
       "News",
+      news.getTitle(),
       news.getDescription()
     );
 

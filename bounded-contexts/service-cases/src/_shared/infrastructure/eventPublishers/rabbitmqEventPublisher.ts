@@ -8,6 +8,7 @@ export async function rabbitmqEventPublisher(
   const eventPayload = {
     entityId: event.entityId.getValue(),
     entityType: event.entityType,
+    title: event.title,
     description: event.description,
   };
 

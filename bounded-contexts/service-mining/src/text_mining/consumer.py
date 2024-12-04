@@ -14,22 +14,32 @@ def consume_messages():
             print(f"Received message: {message}")
             
             original_text = message.get('description', '')
+            original_title = message.get('title', '')
             entity_id = message.get('entityId', '')
             entity_type = message.get('entityType', '')
             
+            print(f"Original title: {original_title}")
             print(f"Original text: {original_text}")
+            
+            processed_title = censor_text(
+                text=original_title,
+                model_name="multilingual",
+                threshold=0.7
+            ) if original_title else ''
             
             processed_text = censor_text(
                 text=original_text,
                 model_name="multilingual",
                 threshold=0.7
-            )
+            ) if original_text else ''
             
+            print(f"Processed title: {processed_title}")
             print(f"Processed text: {processed_text}")
             
             processed_message = {
                 "entityId": entity_id,
                 "entityType": entity_type,
+                "title": processed_title,
                 "description": processed_text
             }
             

@@ -70,9 +70,13 @@ export class Appointment {
   getProcessingStatus(): TextProcessingStatus {
     return this.processingStatus;
   }
+  
+  setTitle(title: string): void {
+    this.title = title;
+  }
 
   setDescription(description: string): void {
-    this.description = description.trim();
+    this.description = description;
   }
 
   setStatus(status: AppointmentStatus): void {

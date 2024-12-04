@@ -5,7 +5,11 @@ import { NoNewsFoundError } from "../../_shared/domain/errors/NoNewsFoundError";
 export class UpdateNewsDescription {
   constructor(private newsRepository: NewsRepository) {}
 
-  async execute(newsId: string, newDescription: string): Promise<void> {
+  async execute(
+    newsId: string,
+    newTitle: string,
+    newDescription: string
+  ): Promise<void> {
     const identifier = Identifier.fromString(newsId);
     const news = await this.newsRepository.findById(identifier);
 
@@ -13,7 +17,8 @@ export class UpdateNewsDescription {
       throw new NoNewsFoundError(newsId);
     }
 
-    news.setDescription(newDescription.trim());
+    news.setTitle(newTitle);
+    news.setDescription(newDescription);
     await this.newsRepository.save(news);
   }
 }
