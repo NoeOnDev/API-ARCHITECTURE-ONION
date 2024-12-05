@@ -1,12 +1,26 @@
 from _config.env import settings
 import pika
 import json
+import time
 from text_mining.model import censor_text
 
 def consume_messages():
-    connection = pika.BlockingConnection(pika.URLParameters(settings.RABBITMQ_URL))
-    channel = connection.channel()
-    channel.queue_declare(queue='text_mining_service', durable=True)
+    max_retries = 10
+    retry_delay = 10
+
+    for attempt in range(max_retries):
+        try:
+            connection = pika.BlockingConnection(pika.URLParameters(settings.RABBITMQ_URL))
+            channel = connection.channel()
+            channel.queue_declare(queue='text_mining_service', durable=True)
+            break
+        except pika.exceptions.AMQPConnectionError as e:
+            print(f"Connection attempt {attempt + 1} failed: {e}")
+            if attempt < max_retries - 1:
+                time.sleep(retry_delay)
+            else:
+                print("Max retries reached. Exiting.")
+                return
 
     def process_message(ch, method, properties, body):
         try:

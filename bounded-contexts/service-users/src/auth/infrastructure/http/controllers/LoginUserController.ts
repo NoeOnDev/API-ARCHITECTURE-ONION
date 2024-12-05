@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { LoginUser } from "../../../application/LoginUser";
 import { DomainError } from "../../../../_shared/domain/errors/DomainError";
+import logger from "../../../../_config/logger";
 
 export class LoginUserController {
   constructor(private loginUser: LoginUser) {}
@@ -14,12 +15,24 @@ export class LoginUserController {
       );
       res.status(200).json({ token });
     } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      logger.error(
+        `Error: ${errorMessage}, Identifier: ${identifier}, Password: ${password}`
+      );
       if (error instanceof DomainError) {
-        res.status(error.statusCode).json({ error: error.message });
+        res
+          .status(error.statusCode)
+          .json({ error: error.message, identifier, password });
       } else {
-        const errorMessage =
-          error instanceof Error ? error.message : "Unknown error";
-        res.status(500).json({ error: "Login failed", details: errorMessage });
+        res
+          .status(500)
+          .json({
+            error: "Login failed",
+            details: errorMessage,
+            identifier,
+            password,
+          });
       }
     }
   }

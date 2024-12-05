@@ -6,12 +6,14 @@ import { initializeConsumers } from "./_helpers/initializeConsumers";
 import contactRoutes from "./contacts/infrastructure/http/routes/contactRoutes";
 import userRoutes from "./users/infrastructure/http/routes/userRoutes";
 import authRoutes from "./auth/infrastructure/http/routes/authRoutes";
+import { loggingMiddleware } from "./_shared/infrastructure/middlewares/loggingMiddleware";
 
 const app = express();
 const port = env.port.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use(loggingMiddleware);
 
 app.use(contactRoutes);
 app.use(userRoutes);

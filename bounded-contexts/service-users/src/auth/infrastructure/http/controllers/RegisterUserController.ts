@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RegisterUser } from "../../../application/RegisterUser";
 import { DomainError } from "../../../../_shared/domain/errors/DomainError";
+import logger from "../../../../_config/logger";
 
 export class RegisterUserController {
   constructor(private registerUser: RegisterUser) {}
@@ -19,10 +20,12 @@ export class RegisterUserController {
       res.status(201).json({ token });
     } catch (error) {
       if (error instanceof DomainError) {
+        logger.error(`Error: ${error.message}`);
         res.status(error.statusCode).json({ error: error.message });
       } else {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";
+        logger.error(`Error: ${errorMessage}`);
         res
           .status(500)
           .json({ error: "Error saving contact", details: errorMessage });
