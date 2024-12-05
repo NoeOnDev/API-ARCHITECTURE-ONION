@@ -18,7 +18,7 @@ app.use(userRoutes);
 app.use(authRoutes);
 
 connectWithRetry(10, 10000, () => {
-  initializeConsumers();
+  initializeConsumers(10, 10000);
   app.listen(port, () => {
     console.log(`Server running at http://localhost:${port} 🚀`);
   });
