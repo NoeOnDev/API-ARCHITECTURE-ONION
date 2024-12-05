@@ -1,11 +1,8 @@
 import { createRabbitMQChannel } from "../_config/rabbitmq.config";
 import { UpdateEntityDescriptionConsumer } from "../_shared/infrastructure/consumers/UpdateEntityDescriptionConsumer";
-import { ServiceNotificationConsumer } from "../notifications/infrastructure/consumers/ServiceNotificationConsumer";
 import { updateReportDescription } from "../reports/infrastructure/dependencyInjection";
 import { updateAppointmentDescription } from "../appointments/infrastructure/dependencyInjection";
 import { updateNewsDescription } from "../news/infrastructure/dependencyInjection";
-import { generateTokenForUser } from "../tokens/infrastructure/dependencyInjection";
-import { sendNotification } from "../notifications/infrastructure/dependencyInjection";
 
 export const initializeConsumers = async (retries: number, delay: number) => {
   for (let i = 0; i < retries; i++) {
@@ -20,19 +17,12 @@ export const initializeConsumers = async (retries: number, delay: number) => {
           updateNewsDescription
         );
 
-      const serviceNotificationConsumer = new ServiceNotificationConsumer(
-        channel,
-        generateTokenForUser,
-        sendNotification
-      );
-
       await updateEntityDescriptionConsumer.consume();
-      await serviceNotificationConsumer.consume();
-      console.log("RabbitMQ consumers initialized successfully ✅");
+      console.log("RabbitMQ consumer initialized successfully ✅");
       return;
     } catch (error) {
       console.error(
-        `Error initializing RabbitMQ consumers (attempt ${
+        `Error initializing RabbitMQ consumer (attempt ${
           i + 1
         } of ${retries}): ❗`,
         error
@@ -43,7 +33,7 @@ export const initializeConsumers = async (retries: number, delay: number) => {
     }
   }
   console.error(
-    "Could not initialize RabbitMQ consumers after multiple attempts. Exiting... ❌"
+    "Could not initialize RabbitMQ consumer after multiple attempts. Exiting... ❌"
   );
   process.exit(1);
 };
