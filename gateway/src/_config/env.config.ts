@@ -8,7 +8,6 @@ const envSchema = Joi.object({
   USERS_SERVICE_URL: Joi.string().uri().required(),
   NOTIFICATIONS_SERVICE_URL: Joi.string().uri().required(),
   CASES_SERVICE_URL: Joi.string().uri().required(),
-  PAYMENTS_SERVICE_URL: Joi.string().uri().required(),
 }).unknown();
 
 const { error, value: envVars } = envSchema.validate(process.env);
@@ -22,7 +21,6 @@ const {
   USERS_SERVICE_URL,
   NOTIFICATIONS_SERVICE_URL,
   CASES_SERVICE_URL,
-  PAYMENTS_SERVICE_URL,
 } = envVars;
 
 interface Env {
@@ -33,7 +31,6 @@ interface Env {
     USERS_SERVICE_URL: string;
     NOTIFICATIONS_SERVICE_URL: string;
     CASES_SERVICE_URL: string;
-    PAYMENTS_SERVICE_URL: string;
   };
 }
 
@@ -45,6 +42,5 @@ export const env: Env = {
     USERS_SERVICE_URL: USERS_SERVICE_URL,
     NOTIFICATIONS_SERVICE_URL: NOTIFICATIONS_SERVICE_URL,
     CASES_SERVICE_URL: CASES_SERVICE_URL,
-    PAYMENTS_SERVICE_URL: PAYMENTS_SERVICE_URL,
   },
 };
